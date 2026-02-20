@@ -49,6 +49,18 @@ program.command(`done`)
   console.log(chalk.default.green(`タスクを完了しました。`));
 });
 
+// タスクの削除command
+program.command(`delete`)
+.argument(`<string>`)
+.action((taskId) => {
+  if (!taskId){
+    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
+    return;
+  }
+  deleteTask(taskId);
+  console.log(chalk.default.yellow(`タスクを削除しました。`));
+});
+
 // タスクを登録
 function register(task) {
   const id = uuid.v1();
@@ -62,6 +74,13 @@ function register(task) {
   tasks.push(newTask);
   saveTaskList(tasks);
 };
+
+// タスクを削除
+function deleteTask(taskId) {
+  const tasks = taskList();
+  const updatedTasks = tasks.filter(task => task.id !== taskId);
+  saveTaskList(updatedTasks);
+}
 
 // タスクの保存
 function saveTaskList(taskList) {
