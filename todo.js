@@ -5,10 +5,24 @@ const uuid  = require('uuid');
 const fs = require('fs');
 const taskListPath = `taskList.json`;
 
+// タスクの追加command
 program.command(`add`)
 .argument(`<string>`)
 .action((task) => {
   register(task);
+});
+
+// タスクの一覧表示command
+program.command(`list`)
+.action(() => {
+  const tasks = taskList();
+  tasks.forEach(task => {
+    if (task.isCompleted) {
+      console.log(chalk.default.gray(`${task.id}: ${task.task} (${task.createdAt})`));
+      return;
+    }
+    console.log(chalk.default.white(`ID;${task.id} \nタスク;${task.task} \n作成日;(${task.createdAt})\n`));
+  });
 });
 
 // タスクを登録
