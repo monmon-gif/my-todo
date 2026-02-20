@@ -10,19 +10,43 @@ program.command(`add`)
 .argument(`<string>`)
 .action((task) => {
   register(task);
+  console.log(chalk.default.green('タスクを追加しました。'));
 });
 
 // タスクの一覧表示command
 program.command(`list`)
 .action(() => {
   const tasks = taskList();
+  if(tasks.length === 0){
+    console.log((`タスクがありません。`));
+    return;
+  }
   tasks.forEach(task => {
     if (task.isCompleted) {
-      console.log(chalk.default.gray(`${task.id}: ${task.task} (${task.createdAt})`));
+      console.log(chalk.default.gray(`ID;${task.id} \nタスク;${task.task} \n作成日;(${task.createdAt})\n`));
       return;
     }
     console.log(chalk.default.white(`ID;${task.id} \nタスク;${task.task} \n作成日;(${task.createdAt})\n`));
   });
+});
+
+// タスクの完了command
+program.command(`done`)
+.argument(`<string>`)
+.action((taskId) => {
+  if (!taskId){
+    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
+    return;
+  }
+  const tasks = taskList();
+  const updatedTasks = tasks.map(task => {
+    if (task.id === taskId) {
+      return { ...task, isCompleted: true };
+    }
+    return task;
+  });
+  saveTaskList(updatedTasks);
+  console.log(chalk.default.green(`タスクを完了しました。`));
 });
 
 // タスクを登録
@@ -43,7 +67,6 @@ function register(task) {
 function saveTaskList(taskList) {
   const personJSON = JSON.stringify(taskList);
   fs.writeFileSync(taskListPath, personJSON);
-  console.log(chalk.default.green('タスクを追加しました。'));
 }
 
 // タスクの一覧取得
