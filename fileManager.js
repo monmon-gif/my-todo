@@ -1,16 +1,16 @@
 // tasks.jsonの読み書き
 const fs = require('fs');
-const taskListPath = `taskList.json`;
+const tasks = `tasks.json`;
 
 // タスクの保存
 function saveTaskList(taskList) {
   const personJSON = JSON.stringify(taskList);
-  fs.writeFileSync(taskListPath, personJSON);
+  fs.writeFileSync(tasks, personJSON);
 }
 
 // タスクの一覧取得
 function getTaskList() {
-  const data = fs.readFileSync(taskListPath);
+  const data = fs.readFileSync(tasks);
   const taskList = JSON.parse(data);
   return taskList;
 }
