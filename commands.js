@@ -42,7 +42,8 @@ function list() {
 
 // タスクを完了
 function done(taskId) {
-  if (!taskId){
+  const task = findTaskById(taskId);
+  if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
