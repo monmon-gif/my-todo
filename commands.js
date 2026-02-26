@@ -8,6 +8,7 @@ const saveTaskList = fileHandring.saveTaskList;
 const taskList = fileHandring.taskList;
 const updateTask = fileHandring.updateTask;
 const findTaskById = fileHandring.findTaskById;
+const checkFileExists = fileHandring.checkFileExists;
 
 // タスクを登録
 function register(task) {
@@ -16,7 +17,8 @@ function register(task) {
   const isCompleted = false;
   // タスクのオブジェクト
   const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted };
-
+  // JSONファイルの確認
+  checkFileExists();
   const tasks = taskList();
 
   tasks.push(newTask);
@@ -26,6 +28,8 @@ function register(task) {
 
 // タスクの一覧表示
 function list() {
+  // JSONファイルの確認
+  checkFileExists();
   const tasks = taskList();
     if(tasks.length === 0){
     console.log((`タスクがありません。`));
@@ -42,6 +46,8 @@ function list() {
 
 // タスクを完了
 function done(taskId) {
+  // JSONファイルの確認
+  checkFileExists();
   const task = findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -60,6 +66,8 @@ function done(taskId) {
 
 // タスクを削除
 function deleteTask(taskId) {
+  // JSONファイルの確認
+  checkFileExists();
   const task = findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));

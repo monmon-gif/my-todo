@@ -15,6 +15,14 @@ function getTaskList() {
   return taskList;
 }
 
+// jsonファイルの存在確認
+function checkFileExists() {
+  if (!fs.existsSync(taskListPath)) {
+    const toJSON = JSON.stringify([]);
+    fs.writeFileSync(taskListPath, toJSON);
+  }
+}
+
 // タスクの配列
 function taskList() {
   const tasks = getTaskList();
@@ -49,5 +57,6 @@ module.exports = {
   getTaskList,
   taskList,
   updateTask,
-  findTaskById
+  findTaskById,
+  checkFileExists
 };
