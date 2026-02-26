@@ -10,9 +10,13 @@ function saveTaskList(taskList) {
 
 // タスクの一覧取得
 function getTaskList() {
-  const data = fs.readFileSync(tasks);
-  const taskList = JSON.parse(data);
-  return taskList;
+  try {
+  const data = fs.readFileSync(taskListPath);
+  return JSON.parse(data); 
+  } catch (error) {
+    // ファイルの形式が違う場合、[]を返す
+    return [];
+  }
 }
 
 // jsonファイルの存在確認
