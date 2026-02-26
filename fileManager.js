@@ -5,13 +5,13 @@ const tasks = `tasks.json`;
 // タスクの保存
 function saveTaskList(taskList) {
   const personJSON = JSON.stringify(taskList);
-  fs.writeFileSync(tasks, personJSON);
+  fs.writeFileSync(tasks, personJSON, 'utf-8');
 }
 
 // タスクの一覧取得
 function getTaskList() {
   try {
-  const data = fs.readFileSync(taskListPath);
+  const data = fs.readFileSync(tasks, 'utf-8');
   return JSON.parse(data); 
   } catch (error) {
     // ファイルの形式が違う場合、[]を返す
@@ -21,9 +21,9 @@ function getTaskList() {
 
 // jsonファイルの存在確認
 function checkFileExists() {
-  if (!fs.existsSync(taskListPath)) {
+  if (!fs.existsSync(tasks)) {
     const toJSON = JSON.stringify([]);
-    fs.writeFileSync(taskListPath, toJSON);
+    fs.writeFileSync(tasks, toJSON);
   }
 }
 
