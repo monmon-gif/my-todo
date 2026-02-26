@@ -6,7 +6,7 @@ const tasks = `tasks.json`;
 function saveTaskList(taskList) {
   try {
     const toJSON = JSON.stringify(taskList);
-    fs.writeFileSync(tasks, toJSON);
+    fs.writeFileSync(tasks, toJSON, `utf-8`);
     return true;
   } catch (error) {
     return false;
