@@ -23,7 +23,7 @@ function register(task) {
 
   tasks.push(newTask);
   saveTaskList(tasks);
-  console.log(chalk.default.green('タスクを追加しました。'));
+  console.log(chalk.default.green(`タスクを追加しました。`));
 };
 
 // タスクの一覧表示

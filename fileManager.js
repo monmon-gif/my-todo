@@ -4,14 +4,18 @@ const tasks = `tasks.json`;
 
 // タスクの保存
 function saveTaskList(taskList) {
-  const personJSON = JSON.stringify(taskList);
-  fs.writeFileSync(tasks, personJSON, 'utf-8');
+  try {
+    const toJSON = JSON.stringify(taskList);
+    fs.writeFileSync(tasks, toJSON);
+  } catch (error) {
+    console.error(`タスクの保存に失敗しました。`);
+  }
 }
 
 // タスクの一覧取得
 function getTaskList() {
   try {
-  const data = fs.readFileSync(tasks, 'utf-8');
+  const data = fs.readFileSync(tasks, `utf-8`);
   return JSON.parse(data); 
   } catch (error) {
     // ファイルの形式が違う場合、[]を返す
