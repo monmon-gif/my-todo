@@ -6,9 +6,10 @@ const tasks = `tasks.json`;
 function saveTaskList(taskList) {
   try {
     const toJSON = JSON.stringify(taskList);
-    fs.writeFileSync(tasks, toJSON);
+    fs.writeFileSync("C:/Windows/tasks.json", toJSON);
+    return true;
   } catch (error) {
-    console.error(`タスクの保存に失敗しました。`);
+    return false;
   }
 }
 

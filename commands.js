@@ -22,8 +22,12 @@ function register(task) {
   const tasks = taskList();
 
   tasks.push(newTask);
-  saveTaskList(tasks);
-  console.log(chalk.default.green(`タスクを追加しました。`));
+  const isSaved = saveTaskList(tasks);
+  if (isSaved) {
+    console.log(chalk.default.green(`タスクを追加しました。`));
+  } else {
+    console.log(chalk.default.red(`タスクの追加に失敗しました。`));
+  }
 };
 
 // タスクの一覧表示
@@ -60,8 +64,12 @@ function done(taskId) {
     }
     return task;
   });
-  saveTaskList(updatedTasks);
-  console.log(chalk.default.green(`タスクを完了しました。`));
+  const isSaved = saveTaskList(updatedTasks);
+  if (isSaved) {
+    console.log(chalk.default.green(`タスクを完了しました。`));
+  } else {
+    console.log(chalk.default.red(`タスクの完了に失敗しました。`));
+  }
 }
 
 // タスクを削除
