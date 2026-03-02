@@ -32,21 +32,6 @@ function checkFileExists() {
   }
 }
 
-// タスクの配列
-function taskList() {
-  const tasks = getTaskList();
-  const newTaskList = [];
-  for (let i = 0; i < tasks.length; i++) {
-    newTaskList.push({
-      id: tasks[i].id,
-      task: tasks[i].task,
-      createdAt: tasks[i].createdAt,
-      isCompleted: tasks[i].isCompleted
-    });
-  }
-  return newTaskList;
-}
-
 // タスクの特定ID検索
 function findTaskById(taskId) {
   const tasks = taskList();
@@ -64,8 +49,8 @@ function updateTask(taskId) {
 module.exports = {
   saveTaskList,
   getTaskList,
-  taskList,
   updateTask,
   findTaskById,
-  checkFileExists
+  checkFileExists,
+  getTaskList
 };
