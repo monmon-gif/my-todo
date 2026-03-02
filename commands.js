@@ -12,6 +12,10 @@ const checkFileExists = fileHandring.checkFileExists;
 
 // タスクを登録
 function register(task) {
+  if (!task) {
+    console.log(`タスクを入力してください。`);
+    return;
+  }
   const id = uuid.v1();
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
   const isCompleted = false;
