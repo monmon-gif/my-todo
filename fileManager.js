@@ -23,7 +23,7 @@ function getTaskList() {
 function checkFileExists() {
   if (!fs.existsSync(tasks)) {
     const toJSON = JSON.stringify([]);
-    fs.writeFileSync(tasks, toJSON);
+    fs.writeFileSync(tasks, toJSON, 'utf-8');
   }
 }
 
