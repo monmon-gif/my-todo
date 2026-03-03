@@ -40,15 +40,15 @@ function findTaskById(taskId) {
 }
 
 // タスクの削除
-function clearTasks(taskId) {
+function clearTask(taskId) {
   const tasks = getTaskList();
-  const clearTask = tasks.filter(task => task.id !== taskId);
-  saveTaskList(clearTask);
+  const task = tasks.filter(task => task.id !== taskId);
+  saveTaskList(task);
 }
 
 module.exports = {
   saveTaskList,
-  clearTasks,
+  clearTask,
   findTaskById,
   checkFileExists,
   getTaskList
