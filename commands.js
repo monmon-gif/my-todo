@@ -5,7 +5,7 @@ const uuid  = require('uuid');
 
 const fileHandring = require('./fileManager');
 const saveTaskList = fileHandring.saveTaskList;
-const updateTask = fileHandring.updateTask;
+const clearTasks = fileHandring.clearTasks;
 const findTaskById = fileHandring.findTaskById;
 const checkFileExists = fileHandring.checkFileExists;
 const getTaskList = fileHandring.getTaskList;
@@ -85,7 +85,7 @@ function deleteTask(taskId) {
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  updateTask(taskId);
+  clearTasks(taskId);
   console.log(chalk.default.yellow(`タスクを削除しました。`));
 }
 

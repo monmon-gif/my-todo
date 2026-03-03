@@ -34,22 +34,21 @@ function checkFileExists() {
 
 // タスクの特定ID検索
 function findTaskById(taskId) {
-  const tasks = taskList();
+  const tasks = getTaskList();
   const task = tasks.find(task => task.id === taskId);
   return task;
 }
 
 // タスクの削除
-function updateTask(taskId) {
-  const tasks = taskList();
-  const updatedTasks = tasks.filter(task => task.id !== taskId);
-  saveTaskList(updatedTasks);
+function clearTasks(taskId) {
+  const tasks = getTaskList();
+  const clearTask = tasks.filter(task => task.id !== taskId);
+  saveTaskList(clearTask);
 }
 
 module.exports = {
   saveTaskList,
-  getTaskList,
-  updateTask,
+  clearTasks,
   findTaskById,
   checkFileExists,
   getTaskList
