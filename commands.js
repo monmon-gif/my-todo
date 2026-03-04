@@ -3,12 +3,12 @@ const dayjs  = require('dayjs');
 const chalk = require('chalk');
 const uuid  = require('uuid');
 
-const fileHandring = require('./fileManager');
-const saveTaskList = fileHandring.saveTaskList;
-const clearTask = fileHandring.clearTask;
-const findTaskById = fileHandring.findTaskById;
-const checkFileExists = fileHandring.checkFileExists;
-const getTaskList = fileHandring.getTaskList;
+const fileHandling = require('./fileManager');
+const saveTaskList = fileHandling.saveTaskList;
+const clearTask = fileHandling.clearTask;
+const findTaskById = fileHandling.findTaskById;
+const checkFileExists = fileHandling.checkFileExists;
+const getTaskList = fileHandling.getTaskList;
 
 // タスクを登録
 function register(task) {
