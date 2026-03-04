@@ -5,10 +5,10 @@ const uuid  = require('uuid');
 
 const fileHandring = require('./fileManager');
 const saveTaskList = fileHandring.saveTaskList;
-const taskList = fileHandring.taskList;
 const updateTask = fileHandring.updateTask;
 const findTaskById = fileHandring.findTaskById;
 const checkFileExists = fileHandring.checkFileExists;
+const getTaskList = fileHandring.getTaskList;
 
 // タスクを登録
 function register(task) {
@@ -23,7 +23,7 @@ function register(task) {
   const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted };
   // JSONファイルの確認
   checkFileExists();
-  const tasks = taskList();
+  const tasks = getTaskList();
 
   tasks.push(newTask);
   const isSaved = saveTaskList(tasks);
@@ -38,7 +38,7 @@ function register(task) {
 function list() {
   // JSONファイルの確認
   checkFileExists();
-  const tasks = taskList();
+  const tasks = getTaskList();
     if(tasks.length === 0){
     console.log((`タスクがありません。`));
     return;
@@ -61,7 +61,7 @@ function done(taskId) {
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  const tasks = taskList();
+  const tasks = getTaskList();
   const updatedTasks = tasks.map(task => {
     if (task.id === taskId) {
       return { ...task, isCompleted: true };
