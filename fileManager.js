@@ -5,7 +5,7 @@ const tasks = `tasks.json`;
 // タスクの保存
 function saveTaskList(taskList) {
   try {
-    const toJSON = JSON.stringify(taskList);
+    const toJSON = JSON.stringify(taskList, null, 2);
     fs.writeFileSync(tasks, toJSON, `utf-8`);
     return true;
   } catch (error) {
