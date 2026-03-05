@@ -4,11 +4,7 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const saveTaskList = fileHandling.saveTaskList;
-const clearTask = fileHandling.clearTask;
-const findTaskById = fileHandling.findTaskById;
-const checkFileExists = fileHandling.checkFileExists;
-const getTaskList = fileHandling.getTaskList;
+const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList } = fileHandling;
 
 // タスクを登録
 function register(task) {
@@ -39,7 +35,7 @@ function list() {
   // JSONファイルの確認
   checkFileExists();
   const tasks = getTaskList();
-    if(tasks.length === 0){
+  if(tasks.length === 0){
     console.log((`タスクがありません。`));
     return;
   }
