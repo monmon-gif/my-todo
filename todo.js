@@ -5,7 +5,7 @@ const { register, list, done, deleteTask } = command;
 
 // タスクの追加command
 program.command(`add`)
-.argument(`<string>`)
+.argument(`<task name>`)
 .action((task) => {
   register(task);
 });
@@ -18,14 +18,14 @@ program.command(`list`)
 
 // タスクの完了command
 program.command(`done`)
-.argument(`<string>`)
+.argument(`<task id>`)
 .action((taskId) => {
   done(taskId);
 });
 
 // タスクの削除command
 program.command(`delete`)
-.argument(`<string>`)
+.argument(`<task id>`)
 .action((taskId) => {
   deleteTask(taskId);
 });
