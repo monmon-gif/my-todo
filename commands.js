@@ -45,10 +45,10 @@ function list() {
   }
   tasks.forEach(task => {
     if (task.isCompleted) {
-      console.log(chalk.default.gray(`ID;${task.id} \nタスク;${task.task} \n作成日;(${task.createdAt})\n完了状態;完了\n`));
+      console.log(chalk.default.gray(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:完了\n`));
       return;
     }
-    console.log(chalk.default.white(`ID;${task.id} \nタスク;${task.task} \n作成日;(${task.createdAt})\n完了状態;未完了\n`));
+    console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
   });
 }
 
