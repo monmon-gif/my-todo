@@ -16,7 +16,7 @@ function register(task) {
     console.log(`タスクを入力してください。`);
     return;
   }
-  const id = uuid.v1();
+  const id = uuid.v4();
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
   const isCompleted = false;
   // タスクのオブジェクト
