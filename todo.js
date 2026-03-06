@@ -1,10 +1,7 @@
 const { program } = require('commander');
 
 const command = require('./commands');
-const register = command.register;
-const list = command.list;
-const done = command.done;
-const deleteTask = command.deleteTask;
+const { register, list, done, deleteTask } = command;
 
 // タスクの追加command
 program.command(`add`)
