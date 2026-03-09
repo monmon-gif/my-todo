@@ -14,10 +14,21 @@ function saveTaskList(taskList) {
 }
 
 // タスクの一覧取得
-function getTaskList() {
+// デフォルト引数を使うことで、引数がある場合とない場合で関数を分けなくてもいい。（可読性）
+function getTaskList(options = {}) {
   try {
-  const data = fs.readFileSync(tasks, `utf-8`);
-  return JSON.parse(data); 
+    const data = fs.readFileSync(tasks, `utf-8`);
+    const taskList = JSON.parse(data);
+    if (options.done) {
+      // 完了タスクのみ
+      return taskList.filter(task => task.isCompleted);
+    }
+    if (options.todo) {
+      // 未完了タスク
+      return taskList.filter(task => !task.isCompleted);
+    }
+  // 全タスク
+  return taskList;
   } catch (error) {
     // ファイルの形式が違う場合、[]を返す
     return [];

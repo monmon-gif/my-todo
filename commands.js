@@ -31,11 +31,18 @@ function register(task) {
 };
 
 // タスクの一覧表示
-function list() {
+function list(options) {
   // JSONファイルの確認
   checkFileExists();
-  const tasks = getTaskList();
+  const tasks = getTaskList(options);
   if(tasks.length === 0){
+    if (options.done) {
+      console.log((`完了したタスクがありません。`));
+      return;
+    } else if (options.todo) {
+      console.log((`未完了のタスクがありません。`));
+      return;
+    }
     console.log((`タスクがありません。`));
     return;
   }

@@ -12,8 +12,10 @@ program.command(`add`)
 
 // タスクの一覧表示command
 program.command(`list`)
-.action(() => {
-  list();
+.option(`--done`)
+.option(`--todo`)
+.action((options) => {
+  list(options);
 });
 
 // タスクの完了command
