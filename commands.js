@@ -4,19 +4,22 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList } = fileHandling;
+const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList} = fileHandling;
 
 // タスクを登録
-function register(task) {
+function register(task, priority) {
   if (!task) {
     console.log(`タスクを入力してください。`);
     return;
+  }
+  if (priority !== `high` && priority !== `low`) {
+    priority = `medium`;
   }
   const id = uuid.v4();
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
   const isCompleted = false;
   // タスクのオブジェクト
-  const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted };
+  const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
   // JSONファイルの確認
   checkFileExists();
   const tasks = getTaskList();
@@ -50,8 +53,18 @@ function list(options) {
     if (task.isCompleted) {
       console.log(chalk.default.gray(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:完了\n`));
       return;
+    } else {
+      if (task.priority === `high`) {
+        console.log(chalk.default.red(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
+        return;
+      } else if (task.priority === `medium`) {
+        console.log(chalk.default.yellow(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
+        return;
+      } else{
+        console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
+        return;
+      }
     }
-    console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
   });
 }
 

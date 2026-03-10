@@ -6,8 +6,9 @@ const { register, list, done, deleteTask, partialMatch } = command;
 // タスクの追加command
 program.command(`add`)
 .argument(`<task name>`)
-.action((task) => {
-  register(task);
+.option(`--priority <priority>`)
+.action((task, options) => {
+  register(task, options.priority);
 });
 
 // タスクの一覧表示command
