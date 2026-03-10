@@ -50,6 +50,17 @@ function findTaskById(taskId) {
   return task;
 }
 
+// タスク名の部分一致検索
+function partialMatchList(taskName) {
+  const tasks = getTaskList();
+  // タスク名が部分一致しているタスクを取得
+  const partialMatchTasks = tasks.filter((taskList) => {
+    const taskTitle = taskList.task;
+    return taskTitle.includes(taskName);
+  });
+  return partialMatchTasks;
+}
+
 // タスクの削除
 function clearTask(taskId) {
   const tasks = getTaskList();
@@ -62,5 +73,6 @@ module.exports = {
   clearTask,
   findTaskById,
   checkFileExists,
-  getTaskList
+  getTaskList,
+  partialMatchList
 };

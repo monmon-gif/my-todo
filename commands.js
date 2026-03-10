@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList } = fileHandling;
+const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList } = fileHandling;
 
 // タスクを登録
 function register(task) {
@@ -92,9 +92,28 @@ function deleteTask(taskId) {
   console.log(chalk.default.yellow(`タスクを削除しました。`));
 }
 
+// タスク名の部分一致検索
+function partialMatch(taskName) {
+  // JSONファイルの確認
+  checkFileExists();
+  const tasks = partialMatchList(taskName);
+  if (tasks.length === 0) {
+    console.log(`一致するタスクがありません。`);
+    return;
+  }
+  tasks.forEach(task => {
+    if (task.isCompleted) {
+      console.log(chalk.default.gray(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:完了\n`));
+      return;
+    }
+    console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
+  });
+}
+
 module.exports = {
   register,
   list,
   done,
-  deleteTask
+  deleteTask,
+  partialMatch
 };
