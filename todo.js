@@ -1,7 +1,7 @@
 const { program } = require('commander');
 
 const command = require('./commands');
-const { register, list, done, deleteTask, partialMatch } = command;
+const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
 
 // タスクの追加command
 program.command(`add`)
@@ -39,6 +39,12 @@ program.command(`search`)
 .action((taskName) => {
   // 部分一致検索
   partialMatch(taskName);
+});
+
+// タスクの統計表示command
+program.command(`status`)
+.action(() => {
+  statisticsDisplay();
 });
 
 program.parse();

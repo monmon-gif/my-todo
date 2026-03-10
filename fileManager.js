@@ -68,11 +68,26 @@ function clearTask(taskId) {
   saveTaskList(task);
 }
 
+// 完了タスクの取得
+function getCompletedTasks(tasks) {
+  const completedTasks = tasks.filter(task => task.isCompleted);
+  return completedTasks.length;
+}
+
+// 1週間のタスクの取得
+function getWeekTaskList(nowDate, oneWeekAgo) {
+  const tasks = getTaskList();
+  const weekTasks = tasks.filter(task => task.createdAt >= oneWeekAgo && task.createdAt <= nowDate);
+  return weekTasks;
+};
+
 module.exports = {
   saveTaskList,
   clearTask,
   findTaskById,
   checkFileExists,
   getTaskList,
-  partialMatchList
+  partialMatchList,
+  getCompletedTasks,
+  getWeekTaskList
 };

@@ -1,10 +1,15 @@
 // 各コマンドの処理
 const dayjs  = require('dayjs');
+// 現在日時
+const nowDate = dayjs().format(`YYYY-MM-DD HH:mm`);
+// 1週間前の日時
+const oneWeekAgo = dayjs().subtract(7, 'day').format(`YYYY-MM-DD HH:mm`);
+
 const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList} = fileHandling;
+const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList, getCompletedTasks, getWeekTaskList } = fileHandling;
 
 // タスクを登録
 function register(task, priority) {
@@ -123,10 +128,25 @@ function partialMatch(taskName) {
   });
 }
 
+function statisticsDisplay() {
+  // JSONファイルの確認
+  checkFileExists();
+  const tasks = getWeekTaskList(nowDate, oneWeekAgo);
+  const totalTasks = tasks.length;
+  const completedTasks = getCompletedTasks(tasks);
+
+  console.log(`全タスク数: ${totalTasks}`);
+  console.log(`完了タスク数: ${completedTasks}`);
+  console.log(`未完了タスク数: ${totalTasks - completedTasks}`);
+  // 四捨五入で完了率を表示
+  console.log(`完了率: ${Math.round((completedTasks / totalTasks) * 100)}%`);
+}
+
 module.exports = {
   register,
   list,
   done,
   deleteTask,
-  partialMatch
+  partialMatch,
+  statisticsDisplay
 };
