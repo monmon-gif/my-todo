@@ -22,8 +22,7 @@ function getTaskList(options = {}) {
     if (options.done) {
       // 完了タスクのみ
       return taskList.filter(task => task.isCompleted);
-    }
-    if (options.todo) {
+    } else if (options.todo) {
       // 未完了タスク
       return taskList.filter(task => !task.isCompleted);
     }
