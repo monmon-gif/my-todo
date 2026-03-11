@@ -32,6 +32,14 @@ npm install
 ```bash
 node todo.js add "タスク内容"
 ```
+タスク名を入れることで、タスクを登録することができます。
+
+```bash
+node todo.js add "タスク内容" --high or low
+```
+タスク名を入れ、その後に「**high**」か「**low**」を入れることで、優先度を設定することができます。
+
+また、特に指定がなければ優先度は「**medium**」として登録されます。
 
 ---
 
@@ -40,6 +48,15 @@ node todo.js add "タスク内容"
 ```bash
 node todo.js list
 ```
+タスクの一覧表示します。
+```bash
+node todo.js list --done
+```
+完了タスクのみ一覧表示します。
+```bash
+node todo.js list --todo
+```
+未完了タスクのみ一覧表示します。
 
 ---
 ###  タスクを完了にする
@@ -47,6 +64,7 @@ node todo.js list
 ```bash
 node todo.js done "タスクID"
 ```
+タスクIDを入れることで、該当のタスクを完了にすることができます。
 
 ---
 
@@ -55,6 +73,19 @@ node todo.js done "タスクID"
 ```bash
 node todo.js delete "タスクID"
 ```
+タスクIDを入れることで、該当のタスクを削除することができます。
+
+### タスクを検索する
+```bash
+node todo.js search "牛乳"
+```
+タスク名（部分一致も可）を入れることで、該当のタスクを検索することができます。
+
+### タスクの統計表示をする
+```bash
+node todo.js stats
+```
+1週間での進捗度を表示することができます。
 
 ---
 
