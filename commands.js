@@ -65,7 +65,7 @@ function list(options) {
       } else if (task.priority === `medium`) {
         console.log(chalk.default.yellow(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
         return;
-      } else{
+      } else {
         console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
         return;
       }
