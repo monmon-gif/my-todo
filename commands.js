@@ -51,7 +51,7 @@ function list(options) {
       console.log((`未完了のタスクがありません。`));
       return;
     }
-    console.log((`タスクがありません。`));
+    console.log(`タスクがありません。`);
     return;
   }
   tasks.forEach(task => {
@@ -132,9 +132,14 @@ function statisticsDisplay() {
   // JSONファイルの確認
   checkFileExists();
   const tasks = getWeekTaskList(nowDate, oneWeekAgo);
+  if(tasks.length === 0){
+    console.log(`タスクがありません。`);
+    return;
+  }
   const totalTasks = tasks.length;
   const completedTasks = getCompletedTasks(tasks);
-
+  console.log(`${oneWeekAgo.substring(0, 10)} から ${nowDate.substring(0, 10)} までのタスク`);
+  console.log(`-----------------------------`);
   console.log(`全タスク数: ${totalTasks}`);
   console.log(`完了タスク数: ${completedTasks}`);
   console.log(`未完了タスク数: ${totalTasks - completedTasks}`);
