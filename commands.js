@@ -115,7 +115,7 @@ function partialMatch(taskName) {
   // JSONファイルの確認
   checkFileExists();
   const tasks = partialMatchList(taskName);
-  if (tasks.length === 0) {
+  if (tasks.length === 0 || !taskName) {
     console.log(`一致するタスクがありません。`);
     return;
   }

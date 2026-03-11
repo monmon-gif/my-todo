@@ -53,7 +53,7 @@ function findTaskById(taskId) {
 function partialMatchList(taskName) {
   const tasks = getTaskList();
   // タスク名が部分一致しているタスクを取得
-  const partialMatchTasks = tasks.filter((taskList) => {
+  const partialMatchTasks = tasks.filter(taskList => {
     const taskTitle = taskList.task;
     return taskTitle.includes(taskName);
   });
