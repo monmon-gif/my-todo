@@ -42,7 +42,7 @@ program.command(`search`)
 });
 
 // タスクの統計表示command
-program.command(`status`)
+program.command(`stats`)
 .action(() => {
   statisticsDisplay();
 });
