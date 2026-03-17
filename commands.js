@@ -1,9 +1,5 @@
 // 各コマンドの処理
 const dayjs  = require('dayjs');
-// 現在日時
-const nowDate = dayjs().format(`YYYY-MM-DD HH:mm`);
-// 1週間前の日時
-const oneWeekAgo = dayjs().subtract(7, 'day').format(`YYYY-MM-DD HH:mm`);
 
 const chalk = require('chalk');
 const uuid  = require('uuid');
@@ -134,7 +130,7 @@ function statisticsDisplay() {
   // 全タスク
   const tasks = getTaskList();
   // 1週間のタスク
-  const oneWeekTasks = getWeekTaskList(nowDate, oneWeekAgo);
+  const oneWeekTasks = getWeekTaskList();
   // 全タスク数
   const totalTasks = tasks.length;
   // 完了タスク数

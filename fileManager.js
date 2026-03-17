@@ -1,4 +1,5 @@
 // tasks.jsonの読み書き
+const dayjs = require('dayjs');
 const fs = require('fs');
 const tasks = `tasks.json`;
 
@@ -74,9 +75,10 @@ function getCompletedTasks(tasks) {
 }
 
 // 1週間のタスクの取得
-function getWeekTaskList(nowDate, oneWeekAgo) {
+function getWeekTaskList() {
   const tasks = getTaskList();
-  const weekTasks = tasks.filter(task => task.createdAt >= oneWeekAgo && task.createdAt <= nowDate);
+  const oneWeekAgo = dayjs().subtract(7, 'day');
+  const weekTasks = tasks.filter(task => dayjs(task.createdAt).isAfter(oneWeekAgo));
   return weekTasks;
 };
 
