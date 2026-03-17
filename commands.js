@@ -144,8 +144,11 @@ function statisticsDisplay() {
   // 四捨五入で完了率
   const completionRate = Math.round((completedTasks / totalTasks) * 100);
 
-  if(totalTasks === 0 && oneWeekTotalTasks === 0){
+  if(totalTasks === 0 ){
     console.log(`タスクがありません。`);
+    return;
+  } else if (oneWeekTotalTasks === 0) {
+    console.log(`直近7日以内に作成したタスクがありません。`);
     return;
   }
   console.log(`全タスク数: ${totalTasks}`);
