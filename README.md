@@ -35,7 +35,9 @@ node todo.js add "タスク内容"
 タスク名を入れることで、タスクを登録することができます。
 
 ```bash
-node todo.js add "タスク内容" --high or low
+node todo.js add "タスク内容（高）" --priority high
+node todo.js add "タスク内容（低）" --priority low
+node todo.js add "タスク内容（中）"
 ```
 タスク名を入れ、その後に「**high**」か「**low**」を入れることで、優先度を設定することができます。
 
