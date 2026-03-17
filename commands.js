@@ -131,20 +131,28 @@ function partialMatch(taskName) {
 function statisticsDisplay() {
   // JSONファイルの確認
   checkFileExists();
-  const tasks = getWeekTaskList(nowDate, oneWeekAgo);
-  if(tasks.length === 0){
+  // 全タスク
+  const tasks = getTaskList();
+  // 1週間のタスク
+  const oneWeekTasks = getWeekTaskList(nowDate, oneWeekAgo);
+  // 全タスク数
+  const totalTasks = tasks.length;
+  // 完了タスク数
+  const completedTasks = getCompletedTasks(tasks);
+  // 1週間のタスク数
+  const oneWeekTotalTasks = oneWeekTasks.length;
+  // 四捨五入で完了率
+  const completionRate = Math.round((completedTasks / totalTasks) * 100);
+
+  if(totalTasks === 0 && oneWeekTotalTasks === 0){
     console.log(`タスクがありません。`);
     return;
   }
-  const totalTasks = tasks.length;
-  const completedTasks = getCompletedTasks(tasks);
-  console.log(`${oneWeekAgo.substring(0, 10)} から ${nowDate.substring(0, 10)} までのタスク`);
-  console.log(`-----------------------------`);
   console.log(`全タスク数: ${totalTasks}`);
   console.log(`完了タスク数: ${completedTasks}`);
   console.log(`未完了タスク数: ${totalTasks - completedTasks}`);
-  // 四捨五入で完了率を表示
-  console.log(`完了率: ${Math.round((completedTasks / totalTasks) * 100)}%`);
+  console.log(`完了率: ${completionRate}%`);
+  console.log(`直近7日以内に作成されたタスク数: ${oneWeekTotalTasks}`);
 }
 
 module.exports = {
