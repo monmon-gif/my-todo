@@ -9,7 +9,7 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList, getCompletedTasks, getWeekTaskList } = fileHandling;
+const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList, getCompletedTasks } = fileHandling;
 
 // タスクを登録
 function register(task, priority) {
@@ -134,7 +134,7 @@ function statisticsDisplay() {
   // 全タスク
   const tasks = getTaskList();
   // 1週間のタスク
-  const oneWeekTasks = getWeekTaskList(nowDate, oneWeekAgo);
+  const oneWeekTasks = tasks.filter(task => task.createdAt >= oneWeekAgo && task.createdAt <= nowDate);
   // 全タスク数
   const totalTasks = tasks.length;
   // 完了タスク数

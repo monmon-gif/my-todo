@@ -73,13 +73,6 @@ function getCompletedTasks(tasks) {
   return completedTasks.length;
 }
 
-// 1週間のタスクの取得
-function getWeekTaskList(nowDate, oneWeekAgo) {
-  const tasks = getTaskList();
-  const weekTasks = tasks.filter(task => task.createdAt >= oneWeekAgo && task.createdAt <= nowDate);
-  return weekTasks;
-};
-
 module.exports = {
   saveTaskList,
   clearTask,
@@ -87,6 +80,5 @@ module.exports = {
   checkFileExists,
   getTaskList,
   partialMatchList,
-  getCompletedTasks,
-  getWeekTaskList
+  getCompletedTasks
 };
