@@ -78,7 +78,7 @@ function getCompletedTasks(tasks) {
 function getWeekTaskList() {
   const tasks = getTaskList();
   const oneWeekAgo = dayjs().subtract(7, 'day');
-  const weekTasks = tasks.filter(task => dayjs(task.createdAt).isAfter(oneWeekAgo));
+  const weekTasks = tasks.filter(task => !dayjs(task.createdAt).isBefore(oneWeekAgo));
   return weekTasks;
 };
 
