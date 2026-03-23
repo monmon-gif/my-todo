@@ -5,7 +5,11 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, clearTask, findTaskById, checkFileExists, getTaskList, partialMatchList, getCompletedTasks, getWeekTaskList } = fileHandling;
+const { saveTaskList, checkFileExists, getTaskList } = fileHandling;
+const taskRepository = require('./taskRepository');
+const { findTaskById, clearTask, partialMatchList, getCompletedTasks, getWeekTaskList } = taskRepository;
+const taskFormatter = require('./taskFormatter');
+const { formatTask } = taskFormatter;
 
 // タスクを登録
 function register(task, priority) {
@@ -50,19 +54,7 @@ function list(options) {
     console.log(`タスクがありません。`);
     return;
   }
-  
-  // タスクの色分け
-  const PRIORITY_COLORS = { high: chalk.default.red, medium: chalk.default.yellow, low: chalk.default.white };
-  const getTaskColor = (task) => task.isCompleted ? chalk.default.gray : (PRIORITY_COLORS[task.priority] ?? chalk.default.white);
-
-  // タスクの表示
-  const formatTask = (task) => {
-    const status = task.isCompleted ? '完了' : '未完了';
-    const taskColor = getTaskColor(task);
-    return console.log(taskColor(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:${status}\n`));
-  }
-
-  tasks.map(task => formatTask(task));
+  formatTask(tasks);
 }
 
 // タスクを完了
@@ -111,13 +103,7 @@ function partialMatch(taskName) {
     console.log(`一致するタスクがありません。`);
     return;
   }
-  tasks.forEach(task => {
-    if (task.isCompleted) {
-      console.log(chalk.default.gray(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:完了\n`));
-      return;
-    }
-    console.log(chalk.default.white(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:未完了\n`));
-  });
+  formatTask(tasks);
 }
 
 function statisticsDisplay() {
