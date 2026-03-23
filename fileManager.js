@@ -34,16 +34,7 @@ function getTaskList(options = {}) {
   }
 }
 
-// jsonファイルの存在確認
-function checkFileExists() {
-  if (!fs.existsSync(tasks)) {
-    const toJSON = JSON.stringify([]);
-    fs.writeFileSync(tasks, toJSON, 'utf-8');
-  }
-}
-
 module.exports = {
   saveTaskList,
-  checkFileExists,
   getTaskList
 };

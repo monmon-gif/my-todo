@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const uuid  = require('uuid');
 
 const fileHandling = require('./fileManager');
-const { saveTaskList, checkFileExists, getTaskList } = fileHandling;
+const { saveTaskList, getTaskList } = fileHandling;
 const taskRepository = require('./taskRepository');
 const { findTaskById, clearTask, partialMatchList, getCompletedTasks, getWeekTaskList } = taskRepository;
 const taskFormatter = require('./taskFormatter');
@@ -26,7 +26,6 @@ function register(task, priority) {
   // タスクのオブジェクト
   const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
   // JSONファイルの確認
-  checkFileExists();
   const tasks = getTaskList();
 
   tasks.push(newTask);
@@ -41,7 +40,6 @@ function register(task, priority) {
 // タスクの一覧表示
 function list(options) {
   // JSONファイルの確認
-  checkFileExists();
   const tasks = getTaskList(options);
   if(tasks.length === 0){
     if (options.done) {
@@ -60,7 +58,6 @@ function list(options) {
 // タスクを完了
 function done(taskId) {
   // JSONファイルの確認
-  checkFileExists();
   const task = findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -84,7 +81,6 @@ function done(taskId) {
 // タスクを削除
 function deleteTask(taskId) {
   // JSONファイルの確認
-  checkFileExists();
   const task = findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -97,7 +93,6 @@ function deleteTask(taskId) {
 // タスク名の部分一致検索
 function partialMatch(taskName) {
   // JSONファイルの確認
-  checkFileExists();
   const tasks = partialMatchList(taskName);
   if (tasks.length === 0 || !taskName) {
     console.log(`一致するタスクがありません。`);
@@ -108,7 +103,6 @@ function partialMatch(taskName) {
 
 function statisticsDisplay() {
   // JSONファイルの確認
-  checkFileExists();
   // 全タスク
   const tasks = getTaskList();
   // 1週間のタスク
