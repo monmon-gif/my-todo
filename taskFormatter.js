@@ -9,10 +9,11 @@ function formatTask(tasks) {
   // タスクの表示
   const formatTask = (task) => {
     const status = task.isCompleted ? '完了' : '未完了';
-    const taskColor = getTaskColor(task);
-    return console.log(taskColor(`ID:${task.id} \nタスク:${task.task} \n作成日:(${task.createdAt})\n完了状態:${status}\n`));
+    return `ID:${task.id}\nタスク:${task.task}\n作成日:(${task.createdAt})\n完了状態:${status}\n`;
   };
-  tasks.map(task => formatTask(task));
+  tasks.forEach((task) => {
+    console.log(getTaskColor(task)(formatTask(task)));
+  });
 }
 
 module.exports = {
