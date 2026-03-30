@@ -7,7 +7,7 @@ const uuid  = require('uuid');
 const fileHandling = require('./fileManager');
 const { saveTaskList, getTaskList } = fileHandling;
 const taskRepository = require('./taskRepository');
-const { findTaskById, clearTask, partialMatchList, getCompletedTasks, getWeekTaskList } = taskRepository;
+const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRepository;
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 
@@ -106,7 +106,10 @@ function statisticsDisplay() {
   // 全タスク
   const tasks = getTaskList();
   // 1週間のタスク
-  const oneWeekTasks = getWeekTaskList();
+  const oneWeekTasks = tasks.filter(task => {
+    const oneWeekAgo = dayjs().subtract(7, 'day');
+    return !dayjs(task.createdAt).isBefore(oneWeekAgo);
+  });
   // 全タスク数
   const totalTasks = tasks.length;
   // 完了タスク数
@@ -121,7 +124,6 @@ function statisticsDisplay() {
     return;
   } else if (oneWeekTotalTasks === 0) {
     console.log(`直近7日以内に作成したタスクがありません。`);
-    return;
   }
   console.log(`全タスク数: ${totalTasks}`);
   console.log(`完了タスク数: ${completedTasks}`);

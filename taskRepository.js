@@ -1,5 +1,3 @@
-const dayjs = require('dayjs');
-
 const fileHandling = require('./fileManager');
 const { saveTaskList, getTaskList } = fileHandling;
 
@@ -34,18 +32,9 @@ function getCompletedTasks(tasks) {
   return completedTasks.length;
 }
 
-// 1週間のタスクの取得
-function getWeekTaskList() {
-  const tasks = getTaskList();
-  const oneWeekAgo = dayjs().subtract(7, 'day');
-  const weekTasks = tasks.filter(task => !dayjs(task.createdAt).isBefore(oneWeekAgo));
-  return weekTasks;
-};
-
 module.exports = {
   clearTask,
   findTaskById,
   partialMatchList,
-  getCompletedTasks,
-  getWeekTaskList
+  getCompletedTasks
 };
