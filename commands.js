@@ -105,9 +105,10 @@ function statisticsDisplay() {
 
   // 全タスク
   const tasks = getTaskList();
+  // 1週間前の日付
+  const oneWeekAgo = dayjs().subtract(7, 'day');
   // 1週間のタスク
   const oneWeekTasks = tasks.filter(task => {
-    const oneWeekAgo = dayjs().subtract(7, 'day');
     return !dayjs(task.createdAt).isBefore(oneWeekAgo);
   });
   // 全タスク数
