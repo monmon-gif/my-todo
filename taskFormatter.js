@@ -8,8 +8,8 @@ function formatTask(tasks) {
 
   // タスクの表示
   const formatTaskDisplay = (task) => {
-    const status = task.isCompleted ? '完了' : '未完了';
-    return `ID:${task.id}\nタスク:${task.task}\n作成日:(${task.createdAt})\n完了状態:${status}\n`;
+    const status = task.done ? '完了' : '未完了';
+    return `ID:${task.id}\nタスク:${task.title}\n作成日:(${task.created_at})\n完了状態:${status}\n`;
   };
   tasks.forEach((task) => {
     console.log(getTaskColor(task)(formatTaskDisplay(task)));

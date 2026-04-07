@@ -11,10 +11,10 @@ const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRep
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getAllTasksTest } = database;
+const { registerTask, getOptionalTasks } = database;
 
 // タスクを登録
-function register(task, priority) {
+async function register(task, priority) {
   if (!task) {
     console.log(`タスクを入力してください。`);
     return;
@@ -28,7 +28,7 @@ function register(task, priority) {
   // タスクのオブジェクト
   const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
 
-  const isRegistered = registerTask(newTask);
+  const isRegistered = await registerTask(newTask);
   if (isRegistered) {
     console.log(chalk.default.green(`タスクを追加しました。`));
   } else {
@@ -37,9 +37,10 @@ function register(task, priority) {
 };
 
 // タスクの一覧表示
-function list(options) {
+async function list(options) {
 
   const tasks = getTaskList(options);
+  const tasksTest = await getOptionalTasks(options);
   if(tasks.length === 0){
     if (options.done) {
       console.log((`完了したタスクがありません。`));
@@ -51,7 +52,7 @@ function list(options) {
     console.log(`タスクがありません。`);
     return;
   }
-  formatTask(tasks);
+  formatTask(tasksTest);
 }
 
 // タスクを完了

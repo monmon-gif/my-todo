@@ -24,32 +24,51 @@ function createTable() {
 };
 
 // タスクの登録
-const registerTask = db.prepare("INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)");
+const registerTaskSql = db.prepare("INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)");
+// タスクの登録（非同期の同期化）
 function registerTask(task) {
-  registerTask.run(task.id, task.task, task.done ? 1 : 0, task.priority, task.createdAt, (err) => {
-    if (err) {
-      console.error(err.message);
-      return false;
-    }
-    return true;
+  return new Promise((resolve, reject) => {
+    registerTaskSql.run(task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
+      if (err) {
+        return  reject(err);
+      } else {
+        return resolve(true);
+      }
+    });
   });
 }
 
-const getDoneTasks = db.prepare("SELECT * FROM tasks WHERE done = 1");
+// 完了タスク一覧の取得
+const getDoneTasksSql = db.prepare("SELECT * FROM tasks WHERE done = 1");
+// 未完了タスク一覧の取得
+const getTodoTasksSql = db.prepare("SELECT * FROM tasks WHERE done = 0");
+// 全タスク一覧の取得
+const getAllTasksSql = db.prepare("SELECT * FROM tasks");
 
-const getAllTasks = db.prepare("SELECT * FROM tasks");
-function getAllTasksTest() {
-  getAllTasks.all((err, rows) => {
+// タスクの取得（非同期の同期化）
+function getOptionalTasks(options = {}) {
+ return new Promise((resolve, reject) => {
+  let sql;
+  if (options.done) {
+    sql = getDoneTasksSql;
+  } else if (options.todo) {
+    sql = getTodoTasksSql;
+  } else {
+    sql = getAllTasksSql;
+  }
+  sql.all((err, rows) => {
     if (err) {
-      console.error(err.message);
+      reject(err);
       return;
+    } else {
+      return resolve(rows);
     }
-    console.log(rows); 
   });
+ });
 }
 
 module.exports = {
   createTable,
   registerTask,
-  getAllTasksTest
+  getOptionalTasks
 };
