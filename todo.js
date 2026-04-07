@@ -2,6 +2,10 @@ const { program } = require('commander');
 
 const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
+const { createTable } = require('./database');
+
+// データベースのテーブル作成(テーブルがない時)
+createTable();
 
 // タスクの追加command
 program.command(`add`)
