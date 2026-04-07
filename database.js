@@ -23,6 +23,33 @@ function createTable() {
   })
 };
 
+// タスクの登録
+const registerTask = db.prepare("INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)");
+function registerTask(task) {
+  registerTask.run(task.id, task.task, task.done ? 1 : 0, task.priority, task.createdAt, (err) => {
+    if (err) {
+      console.error(err.message);
+      return false;
+    }
+    return true;
+  });
+}
+
+const getDoneTasks = db.prepare("SELECT * FROM tasks WHERE done = 1");
+
+const getAllTasks = db.prepare("SELECT * FROM tasks");
+function getAllTasksTest() {
+  getAllTasks.all((err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    console.log(rows); 
+  });
+}
+
 module.exports = {
-  createTable
+  createTable,
+  registerTask,
+  getAllTasksTest
 };

@@ -10,6 +10,8 @@ const taskRepository = require('./taskRepository');
 const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRepository;
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
+const database = require('./database');
+const { registerTask, getAllTasksTest } = database;
 
 // タスクを登録
 function register(task, priority) {
@@ -26,11 +28,8 @@ function register(task, priority) {
   // タスクのオブジェクト
   const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
 
-  const tasks = getTaskList();
-
-  tasks.push(newTask);
-  const isSaved = saveTaskList(tasks);
-  if (isSaved) {
+  const isRegistered = registerTask(newTask);
+  if (isRegistered) {
     console.log(chalk.default.green(`タスクを追加しました。`));
   } else {
     console.log(chalk.default.red(`タスクの追加に失敗しました。`));
