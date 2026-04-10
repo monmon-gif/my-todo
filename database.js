@@ -30,10 +30,9 @@ function registerTask(task) {
   return new Promise((resolve, reject) => {
     registerTaskSql.run(task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
       if (err) {
-        return  reject(err);
-      } else {
-        return resolve(true);
+        return reject(false);
       }
+      return resolve(true);
     });
   });
 }
@@ -67,8 +66,39 @@ function getOptionalTasks(options = {}) {
  });
 }
 
+// タスクIDでタスクを検索
+const findTaskIdSql = db.prepare("SELECT * FROM tasks WHERE id = ?");
+function findTaskId(taskId) {
+  return new Promise((resolve, reject) => {
+    findTaskIdSql.get(taskId, (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(row);
+    });
+  });
+}
+
+// 完了状態の更新
+const updateTaskDoneSql = db.prepare("UPDATE tasks SET done = 1 WHERE id = ?");
+function updateTaskDone(taskId) {
+  return new Promise((resolve, reject) => {
+    updateTaskDoneSql.run(taskId, function(err) {
+      if (err) {
+        reject(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
+
+
 module.exports = {
   createTable,
   registerTask,
-  getOptionalTasks
+  getOptionalTasks,
+  findTaskId,
+  updateTaskDone
 };

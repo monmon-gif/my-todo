@@ -11,7 +11,7 @@ const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRep
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks } = database;
+const { registerTask, getOptionalTasks, findTaskId, updateTaskDone } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -39,8 +39,7 @@ async function register(task, priority) {
 // タスクの一覧表示
 async function list(options) {
 
-  const tasks = getTaskList(options);
-  const tasksTest = await getOptionalTasks(options);
+  const tasks = await getOptionalTasks(options);
   if(tasks.length === 0){
     if (options.done) {
       console.log((`完了したタスクがありません。`));
@@ -52,25 +51,19 @@ async function list(options) {
     console.log(`タスクがありません。`);
     return;
   }
-  formatTask(tasksTest);
+  formatTask(tasks);
 }
 
 // タスクを完了
-function done(taskId) {
+async function done(taskId) {
 
-  const task = findTaskById(taskId);
+  const task = await findTaskId(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  const tasks = getTaskList();
-  const updatedTasks = tasks.map(task => {
-    if (task.id === taskId) {
-      return { ...task, isCompleted: true };
-    }
-    return task;
-  });
-  const isSaved = saveTaskList(updatedTasks);
+  
+  const isSaved = await updateTaskDone(taskId);
   if (isSaved) {
     console.log(chalk.default.green(`タスクを完了しました。`));
   } else {
