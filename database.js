@@ -1,5 +1,5 @@
-const sqlite3 = require("sqlite3").verbose();;
-const db = new sqlite3.Database("./todos.db", (err) => {
+const sqlite3 = require(`sqlite3`).verbose();;
+const db = new sqlite3.Database(`./todos.db`, (err) => {
   if (err) {
     console.error(err.message);
   }
@@ -9,13 +9,7 @@ const db = new sqlite3.Database("./todos.db", (err) => {
 // tasksテーブルの作成
 function createTable() {
   db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS tasks (
-    id TEXT PRIMARY KEY,
-    title TEXT,
-    done INTEGER,
-    priority TEXT,
-    created_at TEXT
-    )`, (err) => {
+    db.run(`CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT, done INTEGER, priority TEXT, created_at TEXT)`, (err) => {
       if (err) {
         console.error(err.message);
       }
@@ -24,7 +18,7 @@ function createTable() {
 };
 
 // タスクの登録
-const registerTaskSql = db.prepare("INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)");
+const registerTaskSql = db.prepare(`INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)`);
 // タスクの登録（非同期の同期化）
 function registerTask(task) {
   return new Promise((resolve, reject) => {
@@ -38,11 +32,11 @@ function registerTask(task) {
 }
 
 // 完了タスク一覧の取得
-const getDoneTasksSql = db.prepare("SELECT * FROM tasks WHERE done = 1");
+const getDoneTasksSql = db.prepare(`SELECT * FROM tasks WHERE done = 1`);
 // 未完了タスク一覧の取得
-const getTodoTasksSql = db.prepare("SELECT * FROM tasks WHERE done = 0");
+const getTodoTasksSql = db.prepare(`SELECT * FROM tasks WHERE done = 0`);
 // 全タスク一覧の取得
-const getAllTasksSql = db.prepare("SELECT * FROM tasks");
+const getAllTasksSql = db.prepare(`SELECT * FROM tasks`);
 
 // タスクの取得（非同期の同期化）
 function getOptionalTasks(options = {}) {
@@ -67,7 +61,7 @@ function getOptionalTasks(options = {}) {
 }
 
 // タスクIDでタスクを検索
-const findTaskIdSql = db.prepare("SELECT * FROM tasks WHERE id = ?");
+const findTaskIdSql = db.prepare(`SELECT * FROM tasks WHERE id = ?`);
 function findTaskId(taskId) {
   return new Promise((resolve, reject) => {
     findTaskIdSql.get(taskId, (err, row) => {
@@ -81,7 +75,7 @@ function findTaskId(taskId) {
 }
 
 // 完了状態の更新
-const updateTaskDoneSql = db.prepare("UPDATE tasks SET done = 1 WHERE id = ?");
+const updateTaskDoneSql = db.prepare(`UPDATE tasks SET done = 1 WHERE id = ?`);
 function updateTaskDone(taskId) {
   return new Promise((resolve, reject) => {
     updateTaskDoneSql.run(taskId, function(err) {
@@ -95,7 +89,7 @@ function updateTaskDone(taskId) {
 }
 
 // タスクの削除
-const deleteTaskSql = db.prepare("DELETE FROM tasks WHERE id = ?");
+const deleteTaskSql = db.prepare(`DELETE FROM tasks WHERE id = ?`);
 function clearTask(taskId) {
   return new Promise((resolve, reject) => {
     deleteTaskSql.run(taskId, function(err) {
@@ -108,6 +102,18 @@ function clearTask(taskId) {
   });
 }
 
+// タスク名の部分一致検索
+const partialMatchTasksSql = db.prepare(`SELECT * FROM tasks WHERE title LIKE ?`);
+function partialMatchTasks(taskName) {
+  return new Promise((resolve, reject) => {
+    partialMatchTasksSql.all(`%${taskName}%`, (err, rows) => {
+      if (err) {
+        reject(false);
+      }
+      resolve(rows);
+    });
+  });
+}
 
 module.exports = {
   createTable,
@@ -115,5 +121,6 @@ module.exports = {
   getOptionalTasks,
   findTaskId,
   updateTaskDone,
-  clearTask
+  clearTask,
+  partialMatchTasks
 };

@@ -11,7 +11,7 @@ const { findTaskById, partialMatchList, getCompletedTasks } = taskRepository;
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask } = database;
+const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -87,10 +87,10 @@ async function deleteTask(taskId) {
 }
 
 // タスク名の部分一致検索
-function partialMatch(taskName) {
+async function partialMatch(taskName) {
 
-  const tasks = partialMatchList(taskName);
-  if (tasks.length === 0 || !taskName) {
+  const tasks = await partialMatchTasks(taskName);
+  if (!tasks) {
     console.log(`一致するタスクがありません。`);
     return;
   }
