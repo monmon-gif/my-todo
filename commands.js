@@ -7,11 +7,11 @@ const uuid  = require('uuid');
 const fileHandling = require('./fileManager');
 const { saveTaskList, getTaskList } = fileHandling;
 const taskRepository = require('./taskRepository');
-const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRepository;
+const { findTaskById, partialMatchList, getCompletedTasks } = taskRepository;
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks, findTaskId, updateTaskDone } = database;
+const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -62,7 +62,6 @@ async function done(taskId) {
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  
   const isSaved = await updateTaskDone(taskId);
   if (isSaved) {
     console.log(chalk.default.green(`タスクを完了しました。`));
@@ -72,15 +71,19 @@ async function done(taskId) {
 }
 
 // タスクを削除
-function deleteTask(taskId) {
+async function deleteTask(taskId) {
 
-  const task = findTaskById(taskId);
+  const task = await findTaskId(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  clearTask(taskId);
-  console.log(chalk.default.yellow(`タスクを削除しました。`));
+  const isDeleted = await clearTask(taskId);
+  if (isDeleted) {
+    console.log(chalk.default.yellow(`タスクを削除しました。`));
+  } else {
+    console.log(chalk.default.red(`タスクの削除に失敗しました。`));
+  }
 }
 
 // タスク名の部分一致検索

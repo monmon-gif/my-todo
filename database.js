@@ -94,11 +94,26 @@ function updateTaskDone(taskId) {
   });
 }
 
+// タスクの削除
+const deleteTaskSql = db.prepare("DELETE FROM tasks WHERE id = ?");
+function clearTask(taskId) {
+  return new Promise((resolve, reject) => {
+    deleteTaskSql.run(taskId, function(err) {
+      if (err) {
+        reject(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
+
 
 module.exports = {
   createTable,
   registerTask,
   getOptionalTasks,
   findTaskId,
-  updateTaskDone
+  updateTaskDone,
+  clearTask
 };
