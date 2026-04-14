@@ -4,10 +4,6 @@ const dayjs  = require('dayjs');
 const chalk = require('chalk');
 const uuid  = require('uuid');
 
-const fileHandling = require('./fileManager');
-const { saveTaskList, getTaskList } = fileHandling;
-const taskRepository = require('./taskRepository');
-const { findTaskById, partialMatchList, getCompletedTasks } = taskRepository;
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
@@ -38,6 +34,7 @@ async function register(task, priority) {
 
 // タスクの一覧表示
 async function list(options) {
+  console.log(options);
 
   const tasks = await getOptionalTasks(options);
   if(tasks.length === 0){
@@ -97,10 +94,10 @@ async function partialMatch(taskName) {
   formatTask(tasks);
 }
 
-function statisticsDisplay() {
+ async function statisticsDisplay() {
 
   // 全タスク
-  const tasks = getTaskList();
+  const tasks = await getOptionalTasks();
   // 1週間前の日付
   const oneWeekAgo = dayjs().subtract(7, 'day');
   // 1週間のタスク
@@ -110,7 +107,7 @@ function statisticsDisplay() {
   // 全タスク数
   const totalTasks = tasks.length;
   // 完了タスク数
-  const completedTasks = getCompletedTasks(tasks);
+  const completedTasks = await getOptionalTasks({ done: true });
   // 1週間のタスク数
   const oneWeekTotalTasks = oneWeekTasks.length;
   // 四捨五入で完了率

@@ -3,7 +3,6 @@ const db = new sqlite3.Database(`./todos.db`, (err) => {
   if (err) {
     console.error(err.message);
   }
-  console.log('データベースに接続しました。');
 });
 
 // tasksテーブルの作成
@@ -24,9 +23,9 @@ function registerTask(task) {
   return new Promise((resolve, reject) => {
     registerTaskSql.run(task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
       if (err) {
-        return reject(false);
+        return reject(err);
       }
-      return resolve(true);
+      return resolve(rows);
     });
   });
 }
@@ -51,11 +50,9 @@ function getOptionalTasks(options = {}) {
   }
   sql.all((err, rows) => {
     if (err) {
-      reject(err);
-      return;
-    } else {
-      return resolve(rows);
+      return reject(err);
     }
+    return resolve(rows);
   });
  });
 }
@@ -64,12 +61,11 @@ function getOptionalTasks(options = {}) {
 const findTaskIdSql = db.prepare(`SELECT * FROM tasks WHERE id = ?`);
 function findTaskId(taskId) {
   return new Promise((resolve, reject) => {
-    findTaskIdSql.get(taskId, (err, row) => {
+    findTaskIdSql.get(taskId, (err, rows) => {
       if (err) {
-        reject(err);
-        return;
+        return reject(err);
       }
-      resolve(row);
+      return resolve(rows);
     });
   });
 }
@@ -80,10 +76,9 @@ function updateTaskDone(taskId) {
   return new Promise((resolve, reject) => {
     updateTaskDoneSql.run(taskId, function(err) {
       if (err) {
-        reject(false);
-      } else {
-        resolve(true);
+        return reject(err);
       }
+      return resolve(rows);
     });
   });
 }
@@ -94,10 +89,9 @@ function clearTask(taskId) {
   return new Promise((resolve, reject) => {
     deleteTaskSql.run(taskId, function(err) {
       if (err) {
-        reject(false);
-      } else {
-        resolve(true);
+        return reject(err);
       }
+      return resolve(rows);
     });
   });
 }
@@ -108,9 +102,9 @@ function partialMatchTasks(taskName) {
   return new Promise((resolve, reject) => {
     partialMatchTasksSql.all(`%${taskName}%`, (err, rows) => {
       if (err) {
-        reject(false);
+        return reject(err);
       }
-      resolve(rows);
+      return resolve(rows);
     });
   });
 }
