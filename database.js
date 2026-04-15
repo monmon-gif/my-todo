@@ -21,11 +21,37 @@ const registerTaskSql = db.prepare(`INSERT INTO tasks (id, title, done, priority
 // タスクの登録（非同期の同期化）
 function registerTask(task) {
   return new Promise((resolve, reject) => {
-    registerTaskSql.run(task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
+    registerTaskSql.run(task.id, task.task, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
       if (err) {
         return reject(err);
       }
-      return resolve(rows);
+      return resolve(true);
+    });
+  });
+}
+
+// 完了状態の更新
+const updateTaskDoneSql = db.prepare(`UPDATE tasks SET done = 1 WHERE id = ?`);
+function updateTaskDone(taskId) {
+  return new Promise((resolve, reject) => {
+    updateTaskDoneSql.run(taskId, function(err) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(true);
+    });
+  });
+}
+
+// タスクの削除
+const deleteTaskSql = db.prepare(`DELETE FROM tasks WHERE id = ?`);
+function clearTask(taskId) {
+  return new Promise((resolve, reject) => {
+    deleteTaskSql.run(taskId, function(err) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(true);
     });
   });
 }
@@ -62,32 +88,6 @@ const findTaskIdSql = db.prepare(`SELECT * FROM tasks WHERE id = ?`);
 function findTaskId(taskId) {
   return new Promise((resolve, reject) => {
     findTaskIdSql.get(taskId, (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(rows);
-    });
-  });
-}
-
-// 完了状態の更新
-const updateTaskDoneSql = db.prepare(`UPDATE tasks SET done = 1 WHERE id = ?`);
-function updateTaskDone(taskId) {
-  return new Promise((resolve, reject) => {
-    updateTaskDoneSql.run(taskId, function(err) {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(rows);
-    });
-  });
-}
-
-// タスクの削除
-const deleteTaskSql = db.prepare(`DELETE FROM tasks WHERE id = ?`);
-function clearTask(taskId) {
-  return new Promise((resolve, reject) => {
-    deleteTaskSql.run(taskId, function(err) {
       if (err) {
         return reject(err);
       }

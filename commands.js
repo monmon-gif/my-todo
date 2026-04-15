@@ -34,8 +34,6 @@ async function register(task, priority) {
 
 // タスクの一覧表示
 async function list(options) {
-  console.log(options);
-
   const tasks = await getOptionalTasks(options);
   if(tasks.length === 0){
     if (options.done) {
@@ -53,7 +51,6 @@ async function list(options) {
 
 // タスクを完了
 async function done(taskId) {
-
   const task = await findTaskId(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -69,7 +66,6 @@ async function done(taskId) {
 
 // タスクを削除
 async function deleteTask(taskId) {
-
   const task = await findTaskId(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -85,17 +81,20 @@ async function deleteTask(taskId) {
 
 // タスク名の部分一致検索
 async function partialMatch(taskName) {
-
+  if (!taskName) {
+    console.log(`タスク名を入力してください。`);
+    return;
+  }
   const tasks = await partialMatchTasks(taskName);
-  if (!tasks) {
+  // メモ[]は、空判定にならない
+  if (tasks.length === 0) {
     console.log(`一致するタスクがありません。`);
     return;
   }
   formatTask(tasks);
 }
 
- async function statisticsDisplay() {
-
+async function statisticsDisplay() {
   // 全タスク
   const tasks = await getOptionalTasks();
   // 1週間前の日付
@@ -107,7 +106,7 @@ async function partialMatch(taskName) {
   // 全タスク数
   const totalTasks = tasks.length;
   // 完了タスク数
-  const completedTasks = await getOptionalTasks({ done: true });
+  const completedTasks = (await getOptionalTasks({ done: true })).length;
   // 1週間のタスク数
   const oneWeekTotalTasks = oneWeekTasks.length;
   // 四捨五入で完了率
