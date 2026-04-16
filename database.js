@@ -109,6 +109,45 @@ function partialMatchTasks(taskName) {
   });
 }
 
+// 全タスク数
+const countAllTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks`);
+function countAllTasks() {
+  return new Promise((resolve, reject) => {
+    countAllTasksSql.get((err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(row[`COUNT(*)`]);
+    });
+  });
+}
+
+// 完了タスク数
+const countCompletedTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks WHERE done = 1`);
+function countCompletedTasks() {
+  return new Promise((resolve, reject) => {
+    countCompletedTasksSql.get((err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(row[`COUNT(*)`]);
+    });
+  });
+}
+
+// 1週間のタスク数
+const countOneWeekTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks WHERE created_at >= ?`);
+function countOneWeekTasks(oneWeekAgo) {
+  return new Promise((resolve, reject) => {
+    countOneWeekTasksSql.get(oneWeekAgo, (err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(row[`COUNT(*)`]);
+    });
+  });
+}
+
 module.exports = {
   createTable,
   registerTask,
@@ -116,5 +155,8 @@ module.exports = {
   findTaskId,
   updateTaskDone,
   clearTask,
-  partialMatchTasks
+  partialMatchTasks,
+  countAllTasks,
+  countCompletedTasks,
+  countOneWeekTasks
 };

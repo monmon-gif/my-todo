@@ -7,7 +7,7 @@ const uuid  = require('uuid');
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks } = database;
+const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks, countAllTasks, countCompletedTasks, countOneWeekTasks } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -96,33 +96,27 @@ async function partialMatch(taskName) {
 
 async function statisticsDisplay() {
   // 全タスク
-  const tasks = await getOptionalTasks();
+  const allTasks = await countAllTasks();
   // 1週間前の日付
-  const oneWeekAgo = dayjs().subtract(7, 'day');
+  const oneWeekAgo = dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss');
   // 1週間のタスク
-  const oneWeekTasks = tasks.filter(task => {
-    return !dayjs(task.createdAt).isBefore(oneWeekAgo);
-  });
-  // 全タスク数
-  const totalTasks = tasks.length;
+  const oneWeekTasks = await countOneWeekTasks(oneWeekAgo);
   // 完了タスク数
-  const completedTasks = (await getOptionalTasks({ done: true })).length;
-  // 1週間のタスク数
-  const oneWeekTotalTasks = oneWeekTasks.length;
+  const completedTasks = await countCompletedTasks();
   // 四捨五入で完了率
-  const completionRate = Math.round((completedTasks / totalTasks) * 100);
+  const completionRate = Math.round((completedTasks / allTasks) * 100);
 
-  if(totalTasks === 0 ){
+  if(allTasks === 0 ){
     console.log(`タスクがありません。`);
     return;
-  } else if (oneWeekTotalTasks === 0) {
+  } else if (oneWeekTasks === 0) {
     console.log(`直近7日以内に作成したタスクがありません。`);
   }
-  console.log(`全タスク数: ${totalTasks}`);
+  console.log(`全タスク数: ${allTasks}`);
   console.log(`完了タスク数: ${completedTasks}`);
-  console.log(`未完了タスク数: ${totalTasks - completedTasks}`);
+  console.log(`未完了タスク数: ${allTasks - completedTasks}`);
   console.log(`完了率: ${completionRate}%`);
-  console.log(`直近7日以内に作成されたタスク数: ${oneWeekTotalTasks}`);
+  console.log(`直近7日以内に作成されたタスク数: ${oneWeekTasks}`);
 }
 
 module.exports = {
