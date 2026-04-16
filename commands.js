@@ -86,7 +86,6 @@ async function partialMatch(taskName) {
     return;
   }
   const tasks = await partialMatchTasks(taskName);
-  // メモ[]は、空判定にならない
   if (tasks.length === 0) {
     console.log(`一致するタスクがありません。`);
     return;
