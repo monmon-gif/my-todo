@@ -7,7 +7,7 @@ const uuid  = require('uuid');
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks, countAllTasks, countCompletedTasks, countOneWeekTasks } = database;
+const {createTable, registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks, countAllTasks, countCompletedTasks, countOneWeekTasks } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -15,6 +15,7 @@ async function register(task, priority) {
     console.log(`タスクを入力してください。`);
     return;
   }
+  await createTable();
   if (priority !== `high` && priority !== `low`) {
     priority = `medium`;
   }
@@ -22,7 +23,7 @@ async function register(task, priority) {
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
   const isCompleted = false;
   // タスクのオブジェクト
-  const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
+  const newTask = { id: id, title: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
 
   const isRegistered = await registerTask(newTask);
   if (isRegistered) {

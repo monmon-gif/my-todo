@@ -5,23 +5,25 @@ const db = new sqlite3.Database(`./todos.db`, (err) => {
   }
 });
 
+const createTableSql = `CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT, done INTEGER, priority TEXT, created_at TEXT)`;
 // tasksテーブルの作成
 function createTable() {
-  db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT, done INTEGER, priority TEXT, created_at TEXT)`, (err) => {
+  return new Promise((resolve, reject) => {
+    db.run(createTableSql, (err) => {
       if (err) {
-        console.error(err.message);
+        return reject(err);
       }
+      return resolve(true);
     });
-  })
+  });
 };
 
 // タスクの登録
-const registerTaskSql = db.prepare(`INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)`);
+const registerTaskSql = `INSERT INTO tasks (id, title, done, priority, created_at) VALUES (?, ?, ?, ?, ?)`;
 // タスクの登録（非同期の同期化）
 function registerTask(task) {
   return new Promise((resolve, reject) => {
-    registerTaskSql.run(task.id, task.task, task.isCompleted ? 1 : 0, task.priority, task.createdAt, function(err) {
+    db.run(registerTaskSql, [task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt], function(err) {
       if (err) {
         return reject(err);
       }
@@ -31,10 +33,10 @@ function registerTask(task) {
 }
 
 // 完了状態の更新
-const updateTaskDoneSql = db.prepare(`UPDATE tasks SET done = 1 WHERE id = ?`);
+const updateTaskDoneSql = `UPDATE tasks SET done = 1 WHERE id = ?`;
 function updateTaskDone(taskId) {
   return new Promise((resolve, reject) => {
-    updateTaskDoneSql.run(taskId, function(err) {
+    db.run(updateTaskDoneSql, [taskId], function(err) {
       if (err) {
         return reject(err);
       }
@@ -44,10 +46,10 @@ function updateTaskDone(taskId) {
 }
 
 // タスクの削除
-const deleteTaskSql = db.prepare(`DELETE FROM tasks WHERE id = ?`);
+const deleteTaskSql = `DELETE FROM tasks WHERE id = ?`;
 function clearTask(taskId) {
   return new Promise((resolve, reject) => {
-    deleteTaskSql.run(taskId, function(err) {
+    db.run(deleteTaskSql, [taskId], function(err) {
       if (err) {
         return reject(err);
       }
@@ -57,11 +59,11 @@ function clearTask(taskId) {
 }
 
 // 完了タスク一覧の取得
-const getDoneTasksSql = db.prepare(`SELECT * FROM tasks WHERE done = 1`);
+const getDoneTasksSql = `SELECT * FROM tasks WHERE done = 1`;
 // 未完了タスク一覧の取得
-const getTodoTasksSql = db.prepare(`SELECT * FROM tasks WHERE done = 0`);
+const getTodoTasksSql = `SELECT * FROM tasks WHERE done = 0`;
 // 全タスク一覧の取得
-const getAllTasksSql = db.prepare(`SELECT * FROM tasks`);
+const getAllTasksSql = `SELECT * FROM tasks`;
 
 // タスクの取得（非同期の同期化）
 function getOptionalTasks(options = {}) {
@@ -74,7 +76,7 @@ function getOptionalTasks(options = {}) {
   } else {
     sql = getAllTasksSql;
   }
-  sql.all((err, rows) => {
+  db.all(sql, (err, rows) => {
     if (err) {
       return reject(err);
     }
@@ -84,10 +86,10 @@ function getOptionalTasks(options = {}) {
 }
 
 // タスクIDでタスクを検索
-const findTaskIdSql = db.prepare(`SELECT * FROM tasks WHERE id = ?`);
+const findTaskIdSql = `SELECT * FROM tasks WHERE id = ?`;
 function findTaskId(taskId) {
   return new Promise((resolve, reject) => {
-    findTaskIdSql.get(taskId, (err, rows) => {
+    db.get(findTaskIdSql, [taskId], (err, rows) => {
       if (err) {
         return reject(err);
       }
@@ -97,10 +99,10 @@ function findTaskId(taskId) {
 }
 
 // タスク名の部分一致検索
-const partialMatchTasksSql = db.prepare(`SELECT * FROM tasks WHERE title LIKE ?`);
+const partialMatchTasksSql = `SELECT * FROM tasks WHERE title LIKE ?`;
 function partialMatchTasks(taskName) {
   return new Promise((resolve, reject) => {
-    partialMatchTasksSql.all(`%${taskName}%`, (err, rows) => {
+    db.all(partialMatchTasksSql, [`%${taskName}%`], (err, rows) => {
       if (err) {
         return reject(err);
       }
@@ -110,10 +112,10 @@ function partialMatchTasks(taskName) {
 }
 
 // 全タスク数
-const countAllTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks`);
+const countAllTasksSql = `SELECT COUNT(*) FROM tasks`;
 function countAllTasks() {
   return new Promise((resolve, reject) => {
-    countAllTasksSql.get((err, row) => {
+    db.get(countAllTasksSql, (err, row) => {
       if (err) {
         return reject(err);
       }
@@ -123,10 +125,10 @@ function countAllTasks() {
 }
 
 // 完了タスク数
-const countCompletedTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks WHERE done = 1`);
+const countCompletedTasksSql = `SELECT COUNT(*) FROM tasks WHERE done = 1`;
 function countCompletedTasks() {
   return new Promise((resolve, reject) => {
-    countCompletedTasksSql.get((err, row) => {
+    db.get(countCompletedTasksSql, (err, row) => {
       if (err) {
         return reject(err);
       }
@@ -136,10 +138,10 @@ function countCompletedTasks() {
 }
 
 // 1週間のタスク数
-const countOneWeekTasksSql = db.prepare(`SELECT COUNT(*) FROM tasks WHERE created_at >= ?`);
+const countOneWeekTasksSql = `SELECT COUNT(*) FROM tasks WHERE created_at >= ?`;
 function countOneWeekTasks(oneWeekAgo) {
   return new Promise((resolve, reject) => {
-    countOneWeekTasksSql.get(oneWeekAgo, (err, row) => {
+    db.get(countOneWeekTasksSql, [oneWeekAgo], (err, row) => {
       if (err) {
         return reject(err);
       }
