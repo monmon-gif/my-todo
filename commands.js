@@ -7,7 +7,7 @@ const uuid  = require('uuid');
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const {createTable, registerTask, getOptionalTasks, findTaskId, updateTaskDone, clearTask, partialMatchTasks, countAllTasks, countCompletedTasks, countOneWeekTasks } = database;
+const {createTable, registerTask, getOptionalTasks, updateTaskDone, clearTask, countAllTasks } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -52,12 +52,12 @@ async function list(options) {
 
 // タスクを完了
 async function done(taskId) {
-  const task = await findTaskId(taskId);
+  const task = await getOptionalTasks({ taskId });
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  const isSaved = await updateTaskDone(taskId);
+  const isSaved = await updateTaskDone({ taskId });
   if (isSaved) {
     console.log(chalk.default.green(`タスクを完了しました。`));
   } else {
@@ -67,7 +67,7 @@ async function done(taskId) {
 
 // タスクを削除
 async function deleteTask(taskId) {
-  const task = await findTaskId(taskId);
+  const task = await getOptionalTasks({ taskId });
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
@@ -86,7 +86,7 @@ async function partialMatch(taskName) {
     console.log(`タスク名を入力してください。`);
     return;
   }
-  const tasks = await partialMatchTasks(taskName);
+  const tasks = await getOptionalTasks({ taskName });
   if (tasks.length === 0) {
     console.log(`一致するタスクがありません。`);
     return;
@@ -100,9 +100,9 @@ async function statisticsDisplay() {
   // 1週間前の日付
   const oneWeekAgo = dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss');
   // 1週間のタスク
-  const oneWeekTasks = await countOneWeekTasks(oneWeekAgo);
+  const oneWeekTasks = await countAllTasks({ oneWeekAgo });
   // 完了タスク数
-  const completedTasks = await countCompletedTasks();
+  const completedTasks = await countAllTasks({ done: true });
   // 四捨五入で完了率
   const completionRate = Math.round((completedTasks / allTasks) * 100);
 

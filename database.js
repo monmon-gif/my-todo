@@ -58,38 +58,23 @@ function clearTask(taskId) {
   });
 }
 
-// 完了タスク一覧の取得
-const getDoneTasksSql = `SELECT * FROM tasks WHERE done = 1`;
-// 未完了タスク一覧の取得
-const getTodoTasksSql = `SELECT * FROM tasks WHERE done = 0`;
-// 全タスク一覧の取得
-const getAllTasksSql = `SELECT * FROM tasks`;
-
-// タスクの取得（非同期の同期化）
+// 引数で指定された条件でタスクを取得
 function getOptionalTasks(options = {}) {
- return new Promise((resolve, reject) => {
-  let sql;
-  if (options.done) {
-    sql = getDoneTasksSql;
-  } else if (options.todo) {
-    sql = getTodoTasksSql;
-  } else {
-    sql = getAllTasksSql;
-  }
-  db.all(sql, (err, rows) => {
-    if (err) {
-      return reject(err);
+  return new Promise((resolve, reject) => {
+    let findTaskIdSql = `SELECT * FROM tasks`;
+    const params = [];
+    if (options.taskId) {
+      findTaskIdSql += ` WHERE id = ?`;
+      params.push(options.taskId);
+    } else if (options.taskName) {
+      findTaskIdSql += ` WHERE title LIKE ?`;
+      params.push(`%${options.taskName}%`);
+    } else if (options.done) {
+      findTaskIdSql += ` WHERE done = 1`;
+    } else if (options.todo) {
+      findTaskIdSql += ` WHERE done = 0`;
     }
-    return resolve(rows);
-  });
- });
-}
-
-// タスクIDでタスクを検索
-const findTaskIdSql = `SELECT * FROM tasks WHERE id = ?`;
-function findTaskId(taskId) {
-  return new Promise((resolve, reject) => {
-    db.get(findTaskIdSql, [taskId], (err, rows) => {
+    db.all(findTaskIdSql, params, (err, rows) => {
       if (err) {
         return reject(err);
       }
@@ -98,50 +83,19 @@ function findTaskId(taskId) {
   });
 }
 
-// タスク名の部分一致検索
-const partialMatchTasksSql = `SELECT * FROM tasks WHERE title LIKE ?`;
-function partialMatchTasks(taskName) {
+// 引数で指定された条件でタスク数を取得
+function countAllTasks(options = {}) {
   return new Promise((resolve, reject) => {
-    db.all(partialMatchTasksSql, [`%${taskName}%`], (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(rows);
-    });
-  });
-}
-
-// 全タスク数
-const countAllTasksSql = `SELECT COUNT(*) FROM tasks`;
-function countAllTasks() {
-  return new Promise((resolve, reject) => {
-    db.get(countAllTasksSql, (err, row) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(row[`COUNT(*)`]);
-    });
-  });
-}
-
-// 完了タスク数
-const countCompletedTasksSql = `SELECT COUNT(*) FROM tasks WHERE done = 1`;
-function countCompletedTasks() {
-  return new Promise((resolve, reject) => {
-    db.get(countCompletedTasksSql, (err, row) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(row[`COUNT(*)`]);
-    });
-  });
-}
-
-// 1週間のタスク数
-const countOneWeekTasksSql = `SELECT COUNT(*) FROM tasks WHERE created_at >= ?`;
-function countOneWeekTasks(oneWeekAgo) {
-  return new Promise((resolve, reject) => {
-    db.get(countOneWeekTasksSql, [oneWeekAgo], (err, row) => {
+    let countAllTasksSql = `SELECT COUNT(*) FROM tasks`;
+    const params = [];
+    if (options.done) {
+      countAllTasksSql += ` WHERE done = 1`;
+    }
+    if (options.oneWeekAgo) {
+      countAllTasksSql += ` WHERE created_at >= ?`;
+      params.push(options.oneWeekAgo);
+    }
+    db.get(countAllTasksSql, params, (err, row) => {
       if (err) {
         return reject(err);
       }
@@ -154,11 +108,7 @@ module.exports = {
   createTable,
   registerTask,
   getOptionalTasks,
-  findTaskId,
   updateTaskDone,
   clearTask,
-  partialMatchTasks,
-  countAllTasks,
-  countCompletedTasks,
-  countOneWeekTasks
+  countAllTasks
 };
