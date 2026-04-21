@@ -34,7 +34,7 @@ function registerTask(task) {
 
 // 完了状態の更新
 const updateTaskDoneSql = `UPDATE tasks SET done = 1 WHERE id = ?`;
-function updateTaskDone(taskId) {
+function updateTaskDone({ taskId }) {
   return new Promise((resolve, reject) => {
     db.run(updateTaskDoneSql, [taskId], function(err) {
       if (err) {
@@ -47,7 +47,7 @@ function updateTaskDone(taskId) {
 
 // タスクの削除
 const deleteTaskSql = `DELETE FROM tasks WHERE id = ?`;
-function clearTask(taskId) {
+function clearTask({ taskId }) {
   return new Promise((resolve, reject) => {
     db.run(deleteTaskSql, [taskId], function(err) {
       if (err) {
