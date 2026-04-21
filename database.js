@@ -23,7 +23,7 @@ const registerTaskSql = `INSERT INTO tasks (id, title, done, priority, created_a
 // タスクの登録（非同期の同期化）
 function registerTask(task) {
   return new Promise((resolve, reject) => {
-    db.run(registerTaskSql, [task.id, task.title, task.isCompleted ? 1 : 0, task.priority, task.createdAt], function(err) {
+    db.run(registerTaskSql, [task.id, task.title, task.done ? 1 : 0, task.priority, task.createdAt], function(err) {
       if (err) {
         return reject(err);
       }

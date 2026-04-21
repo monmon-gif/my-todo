@@ -4,7 +4,7 @@ const chalk = require('chalk');
 function formatTask(tasks) {
   // タスクの色分け
   const PRIORITY_COLORS = { high: chalk.default.red, medium: chalk.default.yellow, low: chalk.default.white };
-  const getTaskColor = (task) => task.isCompleted ? chalk.default.gray : (PRIORITY_COLORS[task.priority] ?? chalk.default.white);
+  const getTaskColor = (task) => task.done ? chalk.default.gray : (PRIORITY_COLORS[task.priority] ?? chalk.default.white);
 
   // タスクの表示
   const formatTaskDisplay = (task) => {

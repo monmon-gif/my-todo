@@ -21,9 +21,9 @@ async function register(task, priority) {
   }
   const id = uuid.v4();
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
-  const isCompleted = false;
+  const done = false;
   // タスクのオブジェクト
-  const newTask = { id: id, title: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
+  const newTask = { id: id, title: task, createdAt: createdAt, done: done, priority: priority };
 
   const isRegistered = await registerTask(newTask);
   if (isRegistered) {
