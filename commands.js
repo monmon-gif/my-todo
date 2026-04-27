@@ -7,7 +7,7 @@ const uuid  = require('uuid');
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const {createTable, registerTask, getOptionalTasks, updateTaskDone, clearTask, countAllTasks } = database;
+const { registerTask, getOptionalTasks, updateTaskDone, clearTask, countAllTasks } = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -15,7 +15,6 @@ async function register(task, priority) {
     console.log(`タスクを入力してください。`);
     return;
   }
-  await createTable();
   if (priority !== `high` && priority !== `low`) {
     priority = `medium`;
   }

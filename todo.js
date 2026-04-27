@@ -4,51 +4,55 @@ const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
 const { createTable } = require('./database');
 
-// データベースのテーブル作成(テーブルがない時)
-createTable();
+async function main() {
+  // データベースのテーブル作成(テーブルがない時)
+  await createTable();
 
-// タスクの追加command
-program.command(`add`)
-.argument(`<task name>`)
-.option(`--priority <priority>`)
-.action((task, options) => {
-  register(task, options.priority);
-});
+  // タスクの追加command
+  program.command(`add`)
+  .argument(`<task name>`)
+  .option(`--priority <priority>`)
+  .action((task, options) => {
+    register(task, options.priority);
+  });
 
-// タスクの一覧表示command
-program.command(`list`)
-.option(`--done`)
-.option(`--todo`)
-.action((options) => {
-  list(options);
-});
+  // タスクの一覧表示command
+  program.command(`list`)
+  .option(`--done`)
+  .option(`--todo`)
+  .action((options) => {
+    list(options);
+  });
 
-// タスクの完了command
-program.command(`done`)
-.argument(`<task id>`)
-.action((taskId) => {
-  done(taskId);
-});
+  // タスクの完了command
+  program.command(`done`)
+  .argument(`<task id>`)
+  .action((taskId) => {
+    done(taskId);
+  });
 
-// タスクの削除command
-program.command(`delete`)
-.argument(`<task id>`)
-.action((taskId) => {
-  deleteTask(taskId);
-});
+  // タスクの削除command
+  program.command(`delete`)
+  .argument(`<task id>`)
+  .action((taskId) => {
+    deleteTask(taskId);
+  });
 
-// タスク名の部分一致検索command
-program.command(`search`)
-.argument(`<task name>`)
-.action((taskName) => {
-  // 部分一致検索
-  partialMatch(taskName);
-});
+  // タスク名の部分一致検索command
+  program.command(`search`)
+  .argument(`<task name>`)
+  .action((taskName) => {
+    // 部分一致検索
+    partialMatch(taskName);
+  });
 
-// タスクの統計表示command
-program.command(`stats`)
-.action(() => {
-  statisticsDisplay();
-});
+  // タスクの統計表示command
+  program.command(`stats`)
+  .action(() => {
+    statisticsDisplay();
+  });
 
-program.parse();
+  program.parse();
+}
+
+main();
