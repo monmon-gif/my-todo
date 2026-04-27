@@ -7,7 +7,18 @@ const uuid  = require('uuid');
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 const database = require('./database');
-const { registerTask, getOptionalTasks, updateTaskDone, clearTask, countAllTasks } = database;
+const {
+  registerTask,
+  updateTaskDone,
+  deletedTask,
+  findAllTasks,
+  findTaskById,
+  findTasksByName,
+  findTasksDone,
+  countAllTasks,
+  countTasksDone,
+  countTasksOneWeekAgo
+} = database;
 
 // タスクを登録
 async function register(task, priority) {
@@ -34,7 +45,12 @@ async function register(task, priority) {
 
 // タスクの一覧表示
 async function list(options) {
-  const tasks = await getOptionalTasks(options);
+  let tasks = [];
+  if (options.done || options.todo) {
+    tasks = await findTasksDone(options.done);
+  } else{
+    tasks = await findAllTasks();
+  }
   if(tasks.length === 0){
     if (options.done) {
       console.log((`完了したタスクがありません。`));
@@ -51,7 +67,7 @@ async function list(options) {
 
 // タスクを完了
 async function done(taskId) {
-  const task = await getOptionalTasks({ taskId });
+  const task = await findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
@@ -66,12 +82,12 @@ async function done(taskId) {
 
 // タスクを削除
 async function deleteTask(taskId) {
-  const task = await getOptionalTasks({ taskId });
+  const task = await findTaskById( taskId );
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
-  const isDeleted = await clearTask(taskId);
+  const isDeleted = await deletedTask({ taskId });
   if (isDeleted) {
     console.log(chalk.default.yellow(`タスクを削除しました。`));
   } else {
@@ -85,7 +101,7 @@ async function partialMatch(taskName) {
     console.log(`タスク名を入力してください。`);
     return;
   }
-  const tasks = await getOptionalTasks({ taskName });
+  const tasks = await findTasksByName(taskName);
   if (tasks.length === 0) {
     console.log(`一致するタスクがありません。`);
     return;
@@ -99,9 +115,9 @@ async function statisticsDisplay() {
   // 1週間前の日付
   const oneWeekAgo = dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss');
   // 1週間のタスク
-  const oneWeekTasks = await countAllTasks({ oneWeekAgo });
+  const oneWeekTasks = await countTasksOneWeekAgo(oneWeekAgo);
   // 完了タスク数
-  const completedTasks = await countAllTasks({ done: true });
+  const completedTasks = await countTasksDone();
   // 四捨五入で完了率
   const completionRate = Math.round((completedTasks / allTasks) * 100);
 
