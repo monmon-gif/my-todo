@@ -4,10 +4,7 @@ const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
 const { createTable } = require('./database');
 
-async function main() {
-  // データベースのテーブル作成(テーブルがない時)
-  await createTable();
-
+function commands() {
   // タスクの追加command
   program.command(`add`)
   .argument(`<task name>`)
@@ -51,6 +48,13 @@ async function main() {
   .action(() => {
     statisticsDisplay();
   });
+}
+
+async function main() {
+  // データベースのテーブル作成(テーブルがない時)
+  await createTable();
+
+  commands();
 
   program.parse();
 }
