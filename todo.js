@@ -9,44 +9,44 @@ function commands() {
   program.command(`add`)
   .argument(`<task name>`)
   .option(`--priority <priority>`)
-  .action((task, options) => {
-    register(task, options.priority);
+  .action(async (task, options) => {
+    await register(task, options.priority);
   });
 
   // タスクの一覧表示command
   program.command(`list`)
   .option(`--done`)
   .option(`--todo`)
-  .action((options) => {
-    list(options);
+  .action(async (options) => {
+    await list(options);
   });
 
   // タスクの完了command
   program.command(`done`)
   .argument(`<task id>`)
-  .action((taskId) => {
-    done(taskId);
+  .action(async (taskId) => {
+    await done(taskId);
   });
 
   // タスクの削除command
   program.command(`delete`)
   .argument(`<task id>`)
-  .action((taskId) => {
-    deleteTask(taskId);
+  .action(async (taskId) => {
+    await deleteTask(taskId);
   });
 
   // タスク名の部分一致検索command
   program.command(`search`)
   .argument(`<task name>`)
-  .action((taskName) => {
+  .action(async (taskName) => {
     // 部分一致検索
-    partialMatch(taskName);
+    await partialMatch(taskName);
   });
 
   // タスクの統計表示command
   program.command(`stats`)
-  .action(() => {
-    statisticsDisplay();
+  .action(async () => {
+    await statisticsDisplay();
   });
 }
 
@@ -56,7 +56,7 @@ async function main() {
 
   commands();
 
-  program.parse();
+  await program.parseAsync(process.argv);
 }
 
 main();
