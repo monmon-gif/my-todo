@@ -51,12 +51,16 @@ function commands() {
 }
 
 async function main() {
-  // データベースのテーブル作成(テーブルがない時)
-  await createTable();
-
-  commands();
-
-  await program.parseAsync(process.argv);
+  try {
+    // データベースのテーブル作成(テーブルがない時)
+    await createTable();
+    commands();
+    await program.parseAsync(process.argv);
+  } catch (err) {
+    console.error(err);
+    // エラー終了
+    process.exit(1);
+  }
 }
 
 main();
