@@ -3,6 +3,7 @@ const dayjs  = require('dayjs');
 
 const chalk = require('chalk');
 const uuid  = require('uuid');
+const axios = require('axios');
 
 const fileHandling = require('./fileManager');
 const { saveTaskList, getTaskList } = fileHandling;
@@ -11,53 +12,84 @@ const { findTaskById, clearTask, partialMatchList, getCompletedTasks } = taskRep
 const taskFormatter = require('./taskFormatter');
 const { formatTask } = taskFormatter;
 
+const dotenv = require('dotenv');
+dotenv.config();
+const KINTONE_BASE_URL = process.env.KINTONE_BASE_URL;
+const KINTONE_APP_ID = process.env.KINTONE_APP_ID;
+const KINTONE_API_TOKEN = process.env.KINTONE_API_TOKEN;
+
 // タスクを登録
-function register(task, priority) {
-  if (!task) {
-    console.log(`タスクを入力してください。`);
+async function register(title, priority) {
+  if (!title) {
+    console.log(`タスク名を入力してください。`);
     return;
   }
   if (priority !== `high` && priority !== `low`) {
     priority = `medium`;
   }
-  const id = uuid.v4();
+  const taskId = uuid.v4();
   const createdAt = dayjs().format(`YYYY-MM-DD HH:mm`);
-  const isCompleted = false;
-  // タスクのオブジェクト
-  const newTask = { id: id, task: task, createdAt: createdAt, isCompleted: isCompleted, priority: priority };
 
-  const tasks = getTaskList();
-
-  tasks.push(newTask);
-  const isSaved = saveTaskList(tasks);
-  if (isSaved) {
+  try {
+    await axios.post(`${KINTONE_BASE_URL}/k/v1/record.json`, {
+      app: KINTONE_APP_ID,
+      record: {
+        taskId: { value: taskId },
+        title: { value: title },
+        done: { value: [] },
+        priority: { value: priority },
+        createdAt: { value: createdAt }
+      }
+    }, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    });
     console.log(chalk.default.green(`タスクを追加しました。`));
-  } else {
-    console.log(chalk.default.red(`タスクの追加に失敗しました。`));
+  } catch (error) {
+    console.error(chalk.default.red(`タスクの追加に失敗しました。`));
+    console.error(error);
   }
 };
 
 // タスクの一覧表示
-function list(options) {
-
-  const tasks = getTaskList(options);
-  if(tasks.length === 0){
-    if (options.done) {
-      console.log((`完了したタスクがありません。`));
-      return;
-    } else if (options.todo) {
-      console.log((`未完了のタスクがありません。`));
+async function list(options) {
+  try {
+    const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      params: {
+        app: KINTONE_APP_ID,
+      }
+    });
+    if (response.data.records.length === 0) {
+      console.log(`タスクがありません。`);
       return;
     }
-    console.log(`タスクがありません。`);
+    const tasks = response.data.records;
+    if(tasks.length === 0){
+      if (options.done) {
+        console.log((`完了したタスクがありません。`));
+        return;
+      } else if (options.todo) {
+        console.log((`未完了のタスクがありません。`));
+        return;
+      }
+      console.log(`タスクがありません。`);
+      return;
+    }
+    formatTask(tasks);
+  } catch (error) {
+    console.error(chalk.default.red(`タスクの取得に失敗しました。`));
+    console.error(error);
     return;
   }
-  formatTask(tasks);
 }
 
 // タスクを完了
 function done(taskId) {
-
   const task = findTaskById(taskId);
   if (!task){
     console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
@@ -91,10 +123,10 @@ function deleteTask(taskId) {
 }
 
 // タスク名の部分一致検索
-function partialMatch(taskName) {
+function partialMatch(title) {
 
-  const tasks = partialMatchList(taskName);
-  if (tasks.length === 0 || !taskName) {
+  const tasks = partialMatchList(title);
+  if (tasks.length === 0 || !title) {
     console.log(`一致するタスクがありません。`);
     return;
   }

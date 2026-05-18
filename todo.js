@@ -5,10 +5,10 @@ const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = co
 
 // タスクの追加command
 program.command(`add`)
-.argument(`<task name>`)
+.argument(`<title name>`)
 .option(`--priority <priority>`)
-.action((task, options) => {
-  register(task, options.priority);
+.action((title, options) => {
+  register(title, options.priority);
 });
 
 // タスクの一覧表示command
@@ -35,10 +35,10 @@ program.command(`delete`)
 
 // タスク名の部分一致検索command
 program.command(`search`)
-.argument(`<task name>`)
-.action((taskName) => {
+.argument(`<title name>`)
+.action((title) => {
   // 部分一致検索
-  partialMatch(taskName);
+  partialMatch(title);
 });
 
 // タスクの統計表示command

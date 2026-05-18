@@ -100,3 +100,5 @@ node todo.js stats
 | **chalk**     | ターミナル出力の色付け                       |
 | **dayjs**     | 日時のフォーマット                           |
 | **uuid**      | 一意なIDの生成                               |
+| **axios**      | kintone REST API へHTTP通信を行う            |
+| **dotenv**      | .env ファイルに定義した環境変数を読み込む       |
