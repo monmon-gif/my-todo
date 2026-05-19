@@ -49,7 +49,7 @@ async function register(title, priority) {
     console.log(chalk.default.green(`タスクを追加しました。`));
   } catch (error) {
     console.error(chalk.default.red(`タスクの追加に失敗しました。`));
-    console.error(error);
+    console.error(error.status || error.data);
   }
 };
 
@@ -62,6 +62,7 @@ async function list(options) {
       },
       params: {
         app: KINTONE_APP_ID,
+        query: options.done ? `done in ("完了")` : options.todo ? `done not in ("完了")` : undefined
       }
     });
     if (response.data.records.length === 0) {
@@ -83,54 +84,110 @@ async function list(options) {
     formatTask(tasks);
   } catch (error) {
     console.error(chalk.default.red(`タスクの取得に失敗しました。`));
-    console.error(error);
+    console.error(error.status || error.data);
     return;
   }
 }
 
 // タスクを完了
-function done(taskId) {
-  const task = findTaskById(taskId);
-  if (!task){
-    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
-    return;
-  }
-  const tasks = getTaskList();
-  const updatedTasks = tasks.map(task => {
-    if (task.id === taskId) {
-      return { ...task, isCompleted: true };
+async function done(taskId) {
+  try {
+    const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      params: {
+        app: KINTONE_APP_ID,
+        query: `taskId = "${taskId}"`
+      }
+    });
+
+    if (response.data.records.length === 0) {
+      console.log(`タスクIDが見つかりませんでした。`);
+      return;
     }
-    return task;
-  });
-  const isSaved = saveTaskList(updatedTasks);
-  if (isSaved) {
+
+    const recordId = response.data.records[0].$id.value;
+
+    await axios.put(`${KINTONE_BASE_URL}/k/v1/record.json`, {
+      app: KINTONE_APP_ID,
+      id: recordId,
+      record: {
+        done: { value: ["完了"] }
+      }
+    }, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    });
     console.log(chalk.default.green(`タスクを完了しました。`));
-  } else {
-    console.log(chalk.default.red(`タスクの完了に失敗しました。`));
+  } catch (error) {
+    console.error(chalk.default.red(`タスクの完了に失敗しました。`));
+    console.error(error.status || error.data);
+    return;
   }
 }
 
 // タスクを削除
-function deleteTask(taskId) {
+async function deleteTask(taskId) {
+  try {
+    const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      params: {
+        app: KINTONE_APP_ID,
+        query: `taskId = "${taskId}"`
+      }
+    });
 
-  const task = findTaskById(taskId);
-  if (!task){
-    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
+    if (response.data.records.length === 0) {
+      console.log(`タスクIDが見つかりませんでした。`);
+      return;
+    }
+    const recordId = response.data.records[0].$id.value;
+    console.log(recordId);
+    await axios.delete(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      data: {
+        app: KINTONE_APP_ID,
+        ids: [recordId]
+      }
+    });
+    console.log(chalk.default.yellow(`タスクを削除しました。`));
+  } catch (error) {    
+    console.error(chalk.default.red(`タスクの削除に失敗しました。`));
+    console.error(error.status || error.data);
     return;
   }
-  clearTask(taskId);
-  console.log(chalk.default.yellow(`タスクを削除しました。`));
 }
 
 // タスク名の部分一致検索
-function partialMatch(title) {
-
-  const tasks = partialMatchList(title);
-  if (tasks.length === 0 || !title) {
-    console.log(`一致するタスクがありません。`);
+async function partialMatch(title) {
+  try {
+    const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      params: {
+        app: KINTONE_APP_ID,
+        query: `title like "${title}"`
+      }
+    });
+    if (response.data.records.length === 0) {
+      console.log(`一致するタスクがありません。`);
+      return;
+    }
+    const tasks = response.data.records;
+    formatTask(tasks);
+  } catch (error) {
+    console.error(chalk.default.red(`タスクの検索に失敗しました。`));
+    console.error(error.status || error.data);
     return;
   }
-  formatTask(tasks);
 }
 
 function statisticsDisplay() {
