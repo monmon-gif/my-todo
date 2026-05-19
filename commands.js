@@ -49,7 +49,7 @@ async function register(title, priority) {
     console.log(chalk.default.green(`タスクを追加しました。`));
   } catch (error) {
     console.error(chalk.default.red(`タスクの追加に失敗しました。`));
-    console.error(error.status || error.data);
+    console.error(error.status || error.response.data);
   }
 };
 
@@ -84,7 +84,7 @@ async function list(options) {
     formatTask(tasks);
   } catch (error) {
     console.error(chalk.default.red(`タスクの取得に失敗しました。`));
-    console.error(error.status || error.data);
+    console.error(error.status || error.response.data);
     return;
   }
 }
@@ -124,7 +124,7 @@ async function done(taskId) {
     console.log(chalk.default.green(`タスクを完了しました。`));
   } catch (error) {
     console.error(chalk.default.red(`タスクの完了に失敗しました。`));
-    console.error(error.status || error.data);
+    console.error(error.status || error.response.data);
     return;
   }
 }
@@ -160,7 +160,7 @@ async function deleteTask(taskId) {
     console.log(chalk.default.yellow(`タスクを削除しました。`));
   } catch (error) {    
     console.error(chalk.default.red(`タスクの削除に失敗しました。`));
-    console.error(error.status || error.data);
+    console.error(error.status || error.response.data);
     return;
   }
 }
@@ -185,41 +185,58 @@ async function partialMatch(title) {
     formatTask(tasks);
   } catch (error) {
     console.error(chalk.default.red(`タスクの検索に失敗しました。`));
-    console.error(error.status || error.data);
+    console.error(error.status || error.response.data);
     return;
   }
 }
 
-function statisticsDisplay() {
+async function statisticsDisplay() {
 
-  // 全タスク
-  const tasks = getTaskList();
-  // 1週間前の日付
-  const oneWeekAgo = dayjs().subtract(7, 'day');
-  // 1週間のタスク
-  const oneWeekTasks = tasks.filter(task => {
-    return !dayjs(task.createdAt).isBefore(oneWeekAgo);
-  });
-  // 全タスク数
-  const totalTasks = tasks.length;
-  // 完了タスク数
-  const completedTasks = getCompletedTasks(tasks);
-  // 1週間のタスク数
-  const oneWeekTotalTasks = oneWeekTasks.length;
-  // 四捨五入で完了率
-  const completionRate = Math.round((completedTasks / totalTasks) * 100);
+  try {
+    // タスクの取得
+    const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
+      headers: {
+        'X-Cybozu-API-Token': KINTONE_API_TOKEN,
+      },
+      params: {
+        app: KINTONE_APP_ID
+      }
+    });
+    if (response.data.records.length === 0) {
+      console.log(`タスクがありません。`);
+      return;
+    }
+    // 全タスク数
+    const tasks = response.data.records.length;
+    // 直近7日以内に作成されたタスク数
+    const oneWeekAgo = dayjs().subtract(7, 'day');
+    const oneWeekTasks = response.data.records.filter(task => {
+      return !dayjs(task.createdAt.value).isBefore(oneWeekAgo);
+    });
+    // 完了タスク数
+    const completedTasks = response.data.records.filter(task => {
+      return task.done.value.includes("完了");
+    }).length;
+    // 完了率
+    const completionRate = Math.round((completedTasks / tasks) * 100);
 
-  if(totalTasks === 0 ){
-    console.log(`タスクがありません。`);
+    if(tasks === 0){
+      console.log(`タスクがありません。`);
+      return;
+    } else if (oneWeekTasks.length === 0) {
+      console.log(`直近7日以内に作成したタスクがありません。`);
+    } else {
+      console.log(`全タスク数: ${tasks}`);
+      console.log(`完了タスク数: ${completedTasks}`);
+      console.log(`未完了タスク数: ${tasks - completedTasks}`);
+      console.log(`完了率: ${completionRate}%`);
+      console.log(`直近7日以内に作成されたタスク数: ${oneWeekTasks.length}`);
+    }
+  } catch (error) {   
+    console.error(chalk.default.red(`タスクの取得に失敗しました。`));
+    console.error(error.status || error.response.data);
     return;
-  } else if (oneWeekTotalTasks === 0) {
-    console.log(`直近7日以内に作成したタスクがありません。`);
   }
-  console.log(`全タスク数: ${totalTasks}`);
-  console.log(`完了タスク数: ${completedTasks}`);
-  console.log(`未完了タスク数: ${totalTasks - completedTasks}`);
-  console.log(`完了率: ${completionRate}%`);
-  console.log(`直近7日以内に作成されたタスク数: ${oneWeekTotalTasks}`);
 }
 
 module.exports = {
