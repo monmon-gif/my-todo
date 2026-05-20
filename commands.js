@@ -52,7 +52,7 @@ async function list(options) {
 async function done(taskId) {
   const response = await taskIdSearch(taskId);
   if (response.length === 0) {
-    console.log(`タスクIDが見つかりませんでした。`);
+    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
   const recordId = response[0].$id.value;
@@ -69,7 +69,7 @@ async function done(taskId) {
 async function deleteTask(taskId) {
   const response = await taskIdSearch(taskId);
   if (response.length === 0) {
-    console.log(`タスクIDが見つかりませんでした。`);
+    console.log(chalk.default.red(`タスクIDが見つかりませんでした。`));
     return;
   }
   const recordId = response[0].$id.value;

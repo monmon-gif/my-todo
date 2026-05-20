@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+const { responseError } = require('./ErrorHandling');
+
 const dotenv = require('dotenv');
 dotenv.config();
 const KINTONE_BASE_URL = process.env.KINTONE_BASE_URL;
@@ -27,8 +29,7 @@ async function taskRegister(taskContent){
   });
   return true;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return false;
   }
 }
@@ -46,8 +47,7 @@ async function taskList(options) {
     });
     return response.data.records;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return [];
   }
 }
@@ -65,8 +65,7 @@ async function taskIdSearch(taskId) {
     });
     return response.data.records;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return [];
   }
 }
@@ -87,8 +86,7 @@ async function taskDone(recordId) {
     });
     return true;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return false;
   }
 }
@@ -106,8 +104,7 @@ async function taskDelete(recordId) {
     });
     return true;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return false;
   }
 }
@@ -125,8 +122,7 @@ async function taskPartialMatch(title) {
     });
     return response.data.records;
   } catch (error) {
-    console.error(error.status);
-    console.error(error.response.data);
+    responseError(error);
     return [];
   }
 }
