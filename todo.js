@@ -3,48 +3,61 @@ const { program } = require('commander');
 const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
 
-// タスクの追加command
-program.command(`add`)
-.argument(`<title name>`)
-.option(`--priority <priority>`)
-.action((title, options) => {
-  register(title, options.priority);
-});
+function commands() {
+  // タスクの追加command
+  program.command(`add`)
+  .argument(`<task name>`)
+  .option(`--priority <priority>`)
+  .action(async (task, options) => {
+    await register(task, options.priority);
+  });
 
-// タスクの一覧表示command
-program.command(`list`)
-.option(`--done`)
-.option(`--todo`)
-.action((options) => {
-  list(options);
-});
+  // タスクの一覧表示command
+  program.command(`list`)
+  .option(`--done`)
+  .option(`--todo`)
+  .action(async (options) => {
+    await list(options);
+  });
 
-// タスクの完了command
-program.command(`done`)
-.argument(`<task id>`)
-.action((taskId) => {
-  done(taskId);
-});
+  // タスクの完了command
+  program.command(`done`)
+  .argument(`<task id>`)
+  .action(async (taskId) => {
+    await done(taskId);
+  });
 
-// タスクの削除command
-program.command(`delete`)
-.argument(`<task id>`)
-.action((taskId) => {
-  deleteTask(taskId);
-});
+  // タスクの削除command
+  program.command(`delete`)
+  .argument(`<task id>`)
+  .action(async (taskId) => {
+    await deleteTask(taskId);
+  });
 
-// タスク名の部分一致検索command
-program.command(`search`)
-.argument(`<title name>`)
-.action((title) => {
-  // 部分一致検索
-  partialMatch(title);
-});
+  // タスク名の部分一致検索command
+  program.command(`search`)
+  .argument(`<task name>`)
+  .action(async (taskName) => {
+    // 部分一致検索
+    await partialMatch(taskName);
+  });
 
-// タスクの統計表示command
-program.command(`stats`)
-.action(() => {
-  statisticsDisplay();
-});
+  // タスクの統計表示command
+  program.command(`stats`)
+  .action(async () => {
+    await statisticsDisplay();
+  });
+}
 
-program.parse();
+async function main() {
+  try {
+    commands();
+    await program.parseAsync(process.argv);
+  } catch (err) {
+    console.error(err);
+    // エラー終了
+    process.exit(1);
+  }
+}
+
+main();
