@@ -91,6 +91,10 @@ async function deleteTask(taskId) {
 
 // タスク名の部分一致検索
 async function partialMatch(title) {
+  if (!title) {
+    console.log(`タスク名を入力してください。`);
+    return;
+  }
   const response = await taskPartialMatch(title);
   if (response.length === 0) {
     console.log(`一致するタスクがありません。`);
