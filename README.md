@@ -5,7 +5,8 @@
 ターミナルから操作するタスク管理ツールをNode.jsで作成しました。
 タスクの追加・一覧表示・ステータス更新・削除をターミナルから行うことができます。
 
-追加したタスクは tasks.jsonに JSON で保存されます。
+追加したタスクは kintone に保存されます。
+そのため、kintone APIを使用しており、.envを作成する必要があります。
 
 
 ## ■ セットアップ手順
@@ -24,6 +25,18 @@ npm install
 ```
 
 ---
+
+### ③.env環境変数設定
+.envを作成し以下を設定する必要があります。
+
+KINTONE_BASE_URL：kintoneのURL
+kintone REST API にリクエストを送信する際のURLとして使用します。
+
+KINTONE_APP_ID=：kintoneを識別するID
+どのkintoneアプリを操作するか指定する際に使用します。
+
+KINTONE_API_TOKEN：kintone REST API の認証トークン
+kintone REST APIリクエストを送信する際に使用します。
 
 ## ■ 各コマンドの使い方
 

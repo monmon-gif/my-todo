@@ -10,7 +10,6 @@ const KINTONE_API_TOKEN = process.env.KINTONE_API_TOKEN;
 
 // タスク登録
 async function taskRegister(taskContent){
-  console.log(taskContent);
   try {
     await axios.post(`${KINTONE_BASE_URL}/k/v1/record.json`, {
     app: KINTONE_APP_ID,
