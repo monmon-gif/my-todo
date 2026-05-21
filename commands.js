@@ -39,7 +39,7 @@ async function list(options) {
   } else if (options.todo) {
     params = `done not in ("完了")`;
   }
-  
+
   const response = await taskList(params);
   if(response.length === 0){
     if (options.done) {
@@ -102,7 +102,7 @@ async function partialMatch(title) {
 async function statisticsDisplay() {
 
   // タスクの取得
-  const response = await taskList({});
+  const response = await taskList();
   // 全タスク数
   const tasks = response.length;
   // 直近7日以内に作成されたタスク数
