@@ -33,7 +33,7 @@ async function taskRegister(taskContent){
   }
 }
 
-async function taskList(options) {
+async function taskList(params) {
   try {
     const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
       headers: {
@@ -41,7 +41,7 @@ async function taskList(options) {
       },
       params: {
         app: KINTONE_APP_ID,
-        query: options.done ? `done in ("完了")` : options.todo ? `done not in ("完了")` : undefined
+        query: params
       }
     });
     return response.data.records;

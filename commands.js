@@ -33,7 +33,14 @@ async function register(title, priority) {
 
 // タスクの一覧表示
 async function list(options) {
-  const response = await taskList(options);
+  let params;
+  if (options.done) {
+    params = `done in ("完了")`;
+  } else if (options.todo) {
+    params = `done not in ("完了")`;
+  }
+  
+  const response = await taskList(params);
   if(response.length === 0){
     if (options.done) {
       console.log((`完了したタスクがありません。`));
