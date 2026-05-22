@@ -122,6 +122,11 @@ function envCheck() {
   }
 }
 
+// エスケープ処理
+function escape(str){
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
 // 環境変数のチェック（実行時にチェック）
 function envCheck() {
   if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
