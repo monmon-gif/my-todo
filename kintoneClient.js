@@ -2,6 +2,8 @@ const axios = require('axios');
 
 const { responseError } = require('./ErrorHandling');
 
+const chalk = require('chalk');
+
 const dotenv = require('dotenv');
 dotenv.config();
 const KINTONE_BASE_URL = process.env.KINTONE_BASE_URL;
