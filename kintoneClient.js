@@ -131,7 +131,6 @@ async function taskPartialMatch(title) {
   }
 }
 
-// 環境変数不足チェック
 // エスケープ処理
 function escape(str){
   return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
