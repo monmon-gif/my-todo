@@ -54,13 +54,14 @@ async function taskList(params) {
 
 async function taskIdSearch(taskId) {
   try {
+    const escapedTaskId = escape(taskId);
     const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
       headers: {
         'X-Cybozu-API-Token': KINTONE_API_TOKEN,
       },
       params: {
         app: KINTONE_APP_ID,
-        query: `taskId = "${taskId}"`
+        query: `taskId = "${escapedTaskId}"`
       }
     });
     return response.data.records;
@@ -111,13 +112,14 @@ async function taskDelete(recordId) {
 
 async function taskPartialMatch(title) {
   try {
+    const escapedTitle = escape(title);
     const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
       headers: {
         'X-Cybozu-API-Token': KINTONE_API_TOKEN,
       },
       params: {
         app: KINTONE_APP_ID,
-        query: `title like "${title}"`
+        query: `title like "${escapedTitle}"`
       }
     });
     return response.data.records;
@@ -128,6 +130,12 @@ async function taskPartialMatch(title) {
 }
 
 // 環境変数不足チェック
+// エスケープ処理
+function escape(str){
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+// 環境変数のチェック（実行時にチェック）
 function envCheck() {
   if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
     // エラーを投げる
