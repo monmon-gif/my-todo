@@ -2,6 +2,7 @@ const { program } = require('commander');
 
 const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
+const { envCheck } = require('./ErrorHandling');
 
 function commands() {
   // タスクの追加command
@@ -51,6 +52,7 @@ function commands() {
 
 async function main() {
   try {
+    envCheck();
     commands();
     await program.parseAsync(process.argv);
   } catch (err) {

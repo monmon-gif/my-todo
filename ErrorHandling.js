@@ -26,8 +26,8 @@ function envCheck() {
     process.exit(1);
   }
 }
-envCheck();
 
 module.exports = {
-  responseError
+  responseError,
+  envCheck
 };
