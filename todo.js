@@ -2,7 +2,7 @@ const { program } = require('commander');
 
 const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
-const { envCheck } = require('./ErrorHandling');
+const { envCheck } = require('./kintoneClient');
 
 function commands() {
   // タスクの追加command
