@@ -95,6 +95,7 @@ async function taskPartialMatch(title) {
     }
   });
   return response.data.records;
+<<<<<<< HEAD
 }
 
 // エスケープ処理
@@ -108,6 +109,8 @@ function envCheck() {
     // エラーを投げる
     throw new Error('環境変数が設定されていません。');
   }
+=======
+>>>>>>> 65462a2 (エラーハンドリング処理の集約)
 }
 
 // エスケープ処理
@@ -118,8 +121,7 @@ function escape(str){
 // 環境変数のチェック（実行時にチェック）
 function envCheck() {
   if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
-    console.error(chalk.default.red(`環境変数が設定されていません。`));
-    process.exit(1);
+    throw new Error(`環境変数が設定されていません。`);
   }
 }
 
