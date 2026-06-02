@@ -126,13 +126,12 @@ async function statisticsDisplay() {
     return;
   } else if (oneWeekTasks.length === 0) {
     console.log(`直近7日以内に作成したタスクがありません。`);
-  } else {
-    console.log(`全タスク数: ${tasks}`);
-    console.log(`完了タスク数: ${completedTasks}`);
-    console.log(`未完了タスク数: ${tasks - completedTasks}`);
-    console.log(`完了率: ${completionRate}%`);
-    console.log(`直近7日以内に作成されたタスク数: ${oneWeekTasks.length}`);
   }
+  console.log(`全タスク数: ${tasks}`);
+  console.log(`完了タスク数: ${completedTasks}`);
+  console.log(`未完了タスク数: ${tasks - completedTasks}`);
+  console.log(`完了率: ${completionRate}%`);
+  console.log(`直近7日以内に作成されたタスク数: ${oneWeekTasks.length}`);
 }
 
 module.exports = {
