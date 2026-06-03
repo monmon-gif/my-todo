@@ -104,7 +104,7 @@ function escape(str){
 // 環境変数のチェック（実行時にチェック）
 function envCheck() {
   if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
-    throw new Error(`環境変数が設定されていません。`);
+    console.error(chalk.default.red(`環境変数が設定されていません。`));
   }
 }
 
