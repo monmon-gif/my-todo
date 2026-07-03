@@ -7,7 +7,7 @@ const KINTONE_BASE_URL = process.env.KINTONE_BASE_URL;
 const KINTONE_APP_ID = process.env.KINTONE_APP_ID;
 const KINTONE_API_TOKEN = process.env.KINTONE_API_TOKEN;
 
-// タスク登録
+// タスク登録処理
 async function taskRegister(taskContent){
   await axios.post(`${KINTONE_BASE_URL}/k/v1/record.json`, {
   app: KINTONE_APP_ID,
@@ -27,6 +27,7 @@ async function taskRegister(taskContent){
 return true;
 }
 
+// タスクの一覧表示処理
 async function taskList(params) {
   const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
     headers: {
@@ -40,6 +41,7 @@ async function taskList(params) {
   return response.data.records;
 }
 
+// タスクID検索処理
 async function taskIdSearch(taskId) {
   const escapedTaskId = escape(taskId);
   const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
@@ -54,6 +56,7 @@ async function taskIdSearch(taskId) {
   return response.data.records;
 }
 
+//  タスクを完了処理
 async function taskDone(recordId) {
   await axios.put(`${KINTONE_BASE_URL}/k/v1/record.json`, {
     app: KINTONE_APP_ID,
@@ -70,6 +73,7 @@ async function taskDone(recordId) {
   return true;
 }
 
+// タスクを削除処理
 async function taskDelete(recordId) {
   await axios.delete(`${KINTONE_BASE_URL}/k/v1/records.json`, {
     headers: {
@@ -83,6 +87,7 @@ async function taskDelete(recordId) {
   return true;
 }
 
+// タスク名の部分一致検索処理
 async function taskPartialMatch(title) {
   const escapedTitle = escape(title);
   const response = await axios.get(`${KINTONE_BASE_URL}/k/v1/records.json`, {
