@@ -4,6 +4,7 @@ const { responseError } = require('./ErrorHandling');
 
 const dotenv = require('dotenv');
 dotenv.config();
+
 const KINTONE_BASE_URL = process.env.KINTONE_BASE_URL;
 const KINTONE_APP_ID = process.env.KINTONE_APP_ID;
 const KINTONE_API_TOKEN = process.env.KINTONE_API_TOKEN;
@@ -126,11 +127,20 @@ async function taskPartialMatch(title) {
   }
 }
 
+// 環境変数不足チェック
+function envCheck() {
+  if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
+    // エラーを投げる
+    throw new Error('環境変数が設定されていません。');
+  }
+}
+
 module.exports = {
   taskRegister,
   taskList,
   taskIdSearch,
   taskDone,
   taskDelete,
-  taskPartialMatch
+  taskPartialMatch,
+  envCheck
 };
