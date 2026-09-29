@@ -2,7 +2,7 @@ const { program } = require('commander');
 
 const command = require('./commands');
 const { register, list, done, deleteTask, partialMatch, statisticsDisplay } = command;
-const { envCheck } = require('./ErrorHandling');
+const { envCheck, responseError } = require('./ErrorHandling');
 
 function commands() {
   // タスクの追加command
@@ -52,11 +52,12 @@ function commands() {
 
 async function main() {
   try {
+    // 環境変数確認
     envCheck();
     commands();
     await program.parseAsync(process.argv);
   } catch (err) {
-    console.error(err);
+    responseError(err);
     // エラー終了
     process.exit(1);
   }
