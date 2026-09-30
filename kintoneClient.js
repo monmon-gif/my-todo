@@ -95,7 +95,6 @@ async function taskPartialMatch(title) {
     }
   });
   return response.data.records;
-<<<<<<< HEAD
 }
 
 // エスケープ処理
@@ -109,8 +108,6 @@ function envCheck() {
     // エラーを投げる
     throw new Error('環境変数が設定されていません。');
   }
-=======
->>>>>>> 65462a2 (エラーハンドリング処理の集約)
 }
 
 // エスケープ処理
