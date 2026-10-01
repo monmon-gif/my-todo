@@ -115,30 +115,6 @@ function envCheck() {
   }
 }
 
-// エスケープ処理
-function escape(str){
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-}
-
-// 環境変数のチェック（実行時にチェック）
-function envCheck() {
-  if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
-    throw new Error(`環境変数が設定されていません。`);
-  }
-}
-
-// エスケープ処理
-function escape(str){
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-}
-
-// 環境変数のチェック（実行時にチェック）
-function envCheck() {
-  if (!KINTONE_BASE_URL || !KINTONE_APP_ID || !KINTONE_API_TOKEN) {
-    throw new Error(`環境変数が設定されていません。`);
-  }
-}
-
 module.exports = {
   taskRegister,
   taskList,

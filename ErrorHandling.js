@@ -1,18 +1,20 @@
 const chalk = require('chalk');
 
 // エラーハンドリング
-function responseError(error){
-  // エラーステータス
-  const status = error.response?.status;
+function responseError(error) {
+  // メッセージ内容
+  let message;
 
-  if (status === 400) {
-    console.error(chalk.default.red(`APIトークンが間違っています。`));
-  } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
-    console.error(chalk.default.red(`ネットワークエラー（kintoneに接続できません。）`));
+  if (error.response) {
+    message = error.response.data?.message || error.message;
+  } else if ( error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' ) {
+    message = 'ネットワークエラー（kintoneに接続できません。）';
+  } else {
+    message = error.message;
   }
 
-  // 環境変数の不足などのメッセージ。400以外もAPIトークン
-  console.error(chalk.default.red(error.message));
+  // エラー内容メッセージ
+  console.error(chalk.default.red(message));
 }
 
 module.exports = {
